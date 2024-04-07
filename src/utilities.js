@@ -1,8 +1,14 @@
 export function compareByID(a, b) {
-    if(a.id > b.id) {
+    if (a.id.toString().length > b.id.toString().length) {
         return 1;
-    } else if(a.id < b.id) {
+    } else if (a.id.toString().length < b.id.toString().length) {
         return -1;
+    } else {
+        if (a.id > b.id) {
+            return 1;
+        } else if (a.id < b.id) {
+            return -1;
+        }
     }
     return 0;
 }
