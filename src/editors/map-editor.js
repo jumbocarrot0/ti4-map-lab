@@ -683,10 +683,12 @@ this.state.include_eronous_systems = false;
             let new_map = null;
             let new_hv = null;
             let new_diff = null;
-            for(let a=0; a<eligible_system_spaces.length; a++) {
-                for(let b=0; b<eligible_system_spaces.length; b++) {
-                    if(
-						a!==b 
+            let swapped_tile_a = null;
+            let swapped_tile_b = null;
+            for (let a = 0; a < eligible_system_spaces.length; a++) {
+                for (let b = 0; b < eligible_system_spaces.length; b++) {
+                    if (
+                        a !== b
 						&&
 						this.state.map.spaces[eligible_system_spaces[a]].system.evaluate(this.state.eval_variables)
 						!== this.state.map.spaces[eligible_system_spaces[b]].system.evaluate(this.state.eval_variables)
@@ -700,12 +702,14 @@ this.state.include_eronous_systems = false;
                             new_diff = this.getBalanceDifference(new_hv);
                             if (new_diff < this.state.balance_difference) {
                                 found_it = true;
+                                swapped_tile_a = new_map.spaces[eligible_system_spaces[a]].system
+                                swapped_tile_b = new_map.spaces[eligible_system_spaces[b]].system
                                 break;
                             }
                         }
                     }
                 }
-                if(found_it) break;
+                if (found_it) break;
             }
             if (found_it) {
                 this.setMap(new_map, new_hv, new_diff);
