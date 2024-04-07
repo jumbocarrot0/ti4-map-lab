@@ -510,6 +510,27 @@ export class SystemComponent extends React.Component {
                 case WORMHOLES.BETA:
                         extras.push(<div title="Beta Wormhole" className="wormhole beta" key="alpha_wh">β</div>);
                     break;
+case WORMHOLES.GAMMA:
+                        extras.push(<div title="Gamma Wormhole" className="wormhole gamma" key="alpha_wh">γ</div>);
+                        break;
+                    case WORMHOLES.EPSILON:
+                        extras.push(<div title="Epsilon Wormhole" className="wormhole epsilon" key="alpha_wh">ε</div>);
+                        break;
+                    case WORMHOLES.ZETA:
+                        extras.push(<div title="Zeta Wormhole" className="wormhole zeta" key="alpha_wh">ζ</div>);
+                        break;
+                    case WORMHOLES.ETA:
+                        extras.push(<div title="Eta Wormhole" className="wormhole eta" key="alpha_wh">η</div>);
+                        break;
+                    case WORMHOLES.THETA:
+                        extras.push(<div title="Theta Wormhole" className="wormhole theta" key="alpha_wh">θ</div>);
+                        break;
+                    case WORMHOLES.IOTA:
+                        extras.push(<div title="Iota Wormhole" className="wormhole iota" key="alpha_wh">ι</div>);
+                        break;
+                    case WORMHOLES.KAPPA:
+                        extras.push(<div title="Kappa Wormhole" className="wormhole kappa" key="alpha_wh">κ</div>);
+                        break;
                 default: break;
             }
                 switch(system.anomaly[i]) {
@@ -546,6 +567,27 @@ export class SystemComponent extends React.Component {
                             break;
                         case WORMHOLES.BETA:
                             extras.push(<div title="Beta Wormhole" className="wormhole beta" key="alpha_wh">β</div>);
+                            break;
+case WORMHOLES.GAMMA:
+                            extras.push(<div title="Gamma Wormhole" className="wormhole gamma" key="alpha_wh">γ</div>);
+                            break;
+                        case WORMHOLES.EPSILON:
+                            extras.push(<div title="Epsilon Wormhole" className="wormhole epsilon" key="alpha_wh">ε</div>);
+                            break;
+                        case WORMHOLES.ZETA:
+                            extras.push(<div title="Zeta Wormhole" className="wormhole zeta" key="alpha_wh">ζ</div>);
+                            break;
+                        case WORMHOLES.ETA:
+                            extras.push(<div title="Eta Wormhole" className="wormhole eta" key="alpha_wh">η</div>);
+                            break;
+                        case WORMHOLES.THETA:
+                            extras.push(<div title="Theta Wormhole" className="wormhole theta" key="alpha_wh">θ</div>);
+                            break;
+                        case WORMHOLES.IOTA:
+                            extras.push(<div title="Iota Wormhole" className="wormhole iota" key="alpha_wh">ι</div>);
+                            break;
+                        case WORMHOLES.KAPPA:
+                            extras.push(<div title="Kappa Wormhole" className="wormhole kappa" key="alpha_wh">κ</div>);
                             break;
                         default: break;
                     }
@@ -734,7 +776,7 @@ export class PlanetComponent extends React.Component {
                 break;
         }
 		let legendary_class = "";
-		if(planet.name==="Primor" || planet.name==="Hope's End") {
+		if(planet.legendary) {
 			legendary_class = " legendary";
 		}
         let name_stuff = null;
