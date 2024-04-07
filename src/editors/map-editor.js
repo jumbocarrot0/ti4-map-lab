@@ -701,7 +701,7 @@ export class MapEditor extends BaseEditor {
             if (found_it) {
                 this.setMap(new_map, new_hv, new_diff);
                 this.setState({
-                    "message": "Balance gap has been improved.",
+                    "message": `Balance gap has been improved.\nSwapped ${swapped_tile_a.id} and ${swapped_tile_b.id}`,
                     "long_op": false,
                 });
             } else {
