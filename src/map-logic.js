@@ -145,7 +145,12 @@ export class System {
     }
 	
 	isLegendary() {
-		return this.id === 65 || this.id === 66;
+        for (let i = 0; i < this.planets.length; i++) {
+            if (this.planets[i].legendary) {
+                return true;
+            }
+        }
+        return false;
 	}
 
     getDistanceModifier(variables = {}) {
