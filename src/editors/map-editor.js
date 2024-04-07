@@ -105,7 +105,7 @@ export class MapEditor extends BaseEditor {
                     || !map.containsSystem(system.id)
                 )
                 && (
-                    (system.id < 59 && include_base_systems)
+                    (system.id > 18 && system.id < 59 && include_base_systems)
                     || (system.id >= 59 && system.id <= 80 && include_expansion_systems)
                     || (system.id >= 4253 && system.id <= 4276 && include_discordant_stars_systems)
                     || (system.id.toString().slice(0, 2) == 'er' && include_eronous_systems)

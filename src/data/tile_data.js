@@ -1661,475 +1661,475 @@ export let planet_data = [
 
 export let system_data = [
     {
-        "id": 18,
+        "id": "18",
         "planets": ["Mecatol Rex"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 39,
+        "id": "39",
         "planets": [],
         "anomaly": [],
         "wormhole": [WORMHOLES.ALPHA]
     },
     {
-        "id": 43,
+        "id": "43",
         "planets": [],
         "anomaly": [ANOMALIES.SUPERNOVA],
         "wormhole": []
     },
     {
-        "id": 46,
+        "id": "46",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 49,
+        "id": "49",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 44,
+        "id": "44",
         "planets": [],
         "anomaly": [ANOMALIES.ASTEROID_FIELD],
         "wormhole": []
     },
     {
-        "id": 40,
+        "id": "40",
         "planets": [],
         "anomaly": [],
         "wormhole": [WORMHOLES.BETA]
     },
     {
-        "id": 48,
+        "id": "48",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 45,
+        "id": "45",
         "planets": [],
         "anomaly": [ANOMALIES.ASTEROID_FIELD],
         "wormhole": []
     },
     {
-        "id": 47,
+        "id": "47",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 42,
+        "id": "42",
         "planets": [],
         "anomaly": [ANOMALIES.NEBULA],
         "wormhole": []
     },
     {
-        "id": 50,
+        "id": "50",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 41,
+        "id": "41",
         "planets": [],
         "anomaly": [ANOMALIES.GRAVITY_RIFT],
         "wormhole": []
     },
     {
-        "id": 32,
+        "id": "32",
         "planets": ["Dal Bootha", "Xxehan"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 26,
+        "id": "26",
         "planets": ["Lodor"],
         "anomaly": [],
         "wormhole": [WORMHOLES.ALPHA]
     },
     {
-        "id": 29,
+        "id": "29",
         "planets": ["Qucen'n", "Rarron"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 38,
+        "id": "38",
         "planets": ["Abyz", "Fria"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 22,
+        "id": "22",
         "planets": ["Tar'Mann"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 21,
+        "id": "21",
         "planets": ["Thibah"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 33,
+        "id": "33",
         "planets": ["Corneeq", "Resculon"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 19,
+        "id": "19",
         "planets": ["Wellon"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 28,
+        "id": "28",
         "planets": ["Tequ'ran", "Torkan"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 24,
+        "id": "24",
         "planets": ["Mehar Xull"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 37,
+        "id": "37",
         "planets": ["Arinam", "Meer"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 30,
+        "id": "30",
         "planets": ["Mellon", "Zohbat"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 20,
+        "id": "20",
         "planets": ["Vefut II"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 27,
+        "id": "27",
         "planets": ["New Albion", "Starpoint"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 23,
+        "id": "23",
         "planets": ["Saudor"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 31,
+        "id": "31",
         "planets": ["Lazar", "Sakulag"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 35,
+        "id": "35",
         "planets": ["Bereg", "Lirta IV"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 34,
+        "id": "34",
         "planets": ["Centauri", "Gral"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 36,
+        "id": "36",
         "planets": ["Arnor", "Lor"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 25,
+        "id": "25",
         "planets": ["Quann"],
         "anomaly": [],
         "wormhole": [WORMHOLES.BETA]
     },
     {
-        "id": 59,
+        "id": "59",
         "planets": ["Archon Vail"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 60,
+        "id": "60",
         "planets": ["Perimeter"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 61,
+        "id": "61",
         "planets": ["Ang"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 62,
+        "id": "62",
         "planets": ["Sem-Lore"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 63,
+        "id": "63",
         "planets": ["Vorhal"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 64,
+        "id": "64",
         "planets": ["Atlas"],
         "anomaly": [],
         "wormhole": [WORMHOLES.BETA]
     },
     {
-        "id": 65,
+        "id": "65",
         "planets": ["Primor"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 66,
+        "id": "66",
         "planets": ["Hope's End"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 67,
+        "id": "67",
         "planets": ["Cormund"],
         "anomaly": [ANOMALIES.GRAVITY_RIFT],
         "wormhole": []
     },
     {
-        "id": 68,
+        "id": "68",
         "planets": ["Everra"],
         "anomaly": [ANOMALIES.NEBULA],
         "wormhole": []
     },
     {
-        "id": 69,
+        "id": "69",
         "planets": ["Accoen", "Joel Ir"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 70,
+        "id": "70",
         "planets": ["Kraag", "Siig"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 71,
+        "id": "71",
         "planets": ["Alio Prima", "Ba'kal"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 72,
+        "id": "72",
         "planets": ["Lisis", "Velnor"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 73,
+        "id": "73",
         "planets": ["Cealdri", "Xanhact"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 74,
+        "id": "74",
         "planets": ["Vega Major", "Vega Minor"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 75,
+        "id": "75",
         "planets": ["Abaddon", "Ashtroth", "Loki"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 76,
+        "id": "76",
         "planets": ["Rigel I", "Rigel II", "Rigel III"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 77,
+        "id": "77",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 78,
+        "id": "78",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 79,
+        "id": "79",
         "planets": [],
         "anomaly": [ANOMALIES.ASTEROID_FIELD],
         "wormhole": [WORMHOLES.ALPHA]
     },
     {
-        "id": 80,
+        "id": "80",
         "planets": [],
         "anomaly": [ANOMALIES.SUPERNOVA],
         "wormhole": []
     },
     {
-        "id": 4253,
+        "id": "4253",
         "planets": ["Silence"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4254,
+        "id": "4254",
         "planets": ["Echo"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4255,
+        "id": "4255",
         "planets": ["Tarock"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4256,
+        "id": "4256",
         "planets": ["Prism"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4257,
+        "id": "4257",
         "planets": ["Troac"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4258,
+        "id": "4258",
         "planets": ["Etir V"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4259,
+        "id": "4259",
         "planets": ["Vioss"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4260,
+        "id": "4260",
         "planets": ["Fakrenn"],
         "anomaly": [],
         "wormhole": [WORMHOLES.ALPHA]
     },
     {
-        "id": 4261,
+        "id": "4261",
         "planets": ["San-Vit", "Lodran"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4262,
+        "id": "4262",
         "planets": ["Dorvok", "Derbrae"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4263,
+        "id": "4263",
         "planets": ["Moln", "Rysaa"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4264,
+        "id": "4264",
         "planets": ["Salin", "Gwiyun"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4265,
+        "id": "4265",
         "planets": ["Inan", "Swog"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4266,
+        "id": "4266",
         "planets": ["Detic", "Lliot"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4267,
+        "id": "4267",
         "planets": ["Qaak", "Larred", "Nairb"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4268,
+        "id": "4268",
         "planets": ["Sierpen", "Mandle", "Regmen"],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4269,
+        "id": "4269",
         "planets": ["Domna"],
         "anomaly": [ANOMALIES.NEBULA],
         "wormhole": []
     },
     {
-        "id": 4270,
+        "id": "4270",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4271,
+        "id": "4271",
         "planets": [],
         "anomaly": [],
         "wormhole": []
     },
     {
-        "id": 4272,
+        "id": "4272",
         "planets": [],
         "anomaly": [ANOMALIES.NEBULA],
         "wormhole": [WORMHOLES.BETA]
     },
     {
-        "id": 4273,
+        "id": "4273",
         "planets": [],
         "anomaly": [ANOMALIES.ASTEROID_FIELD, ANOMALIES.NEBULA],
         "wormhole": []
     },
     {
-        "id": 4274,
+        "id": "4274",
         "planets": [],
         "anomaly": [ANOMALIES.GRAVITY_RIFT, ANOMALIES.ASTEROID_FIELD],
         "wormhole": []
     },
     {
-        "id": 4275,
+        "id": "4275",
         "planets": [],
         "anomaly": [ANOMALIES.GRAVITY_RIFT],
         "wormhole": [WORMHOLES.GAMMA]
     },
     {
-        "id": 4276,
+        "id": "4276",
         "planets": [],
         "anomaly": [ANOMALIES.SUPERNOVA],
         "wormhole": [WORMHOLES.ALPHA, WORMHOLES.BETA]

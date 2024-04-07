@@ -28,7 +28,7 @@ export class SystemBankComponent extends React.Component {
             this.props.setActiveSystem(null);
         } else {
             this.props.setActiveSystem(
-                this.props.systems.getSystemByID(parseInt(new_value))
+                this.props.systems.getSystemByID(new_value)
             );
         }
     }
