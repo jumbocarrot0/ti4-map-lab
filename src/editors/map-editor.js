@@ -50,6 +50,8 @@ export class MapEditor extends BaseEditor {
             "dont_move_anomalies": false,
             "dont_move_empty": false,
         };
+this.state.include_eronous_systems = false;
+        this.state.include_discordant_stars_systems = true;
         this.state.include_expansion_systems = true;
 		this.state.include_base_systems = true;
         this.state.bank_systems = this.syncBankSystems(starting_layout,
@@ -91,23 +93,23 @@ export class MapEditor extends BaseEditor {
         });
     }
 
-    syncBankSystems(map, include_expansion_systems=null, include_base_systems=null) {
-        if(include_expansion_systems===null) include_expansion_systems = this.state.include_expansion_systems;
-		if(include_base_systems===null) include_base_systems = this.state.include_base_systems;
+    syncBankSystems(map, { include_eronous_systems = null, include_discordant_stars_systems = null, include_expansion_systems = null, include_base_systems = null } = {}) {
+        if (include_eronous_systems === null) include_eronous_systems = this.state.include_eronous_systems;
+        if (include_discordant_stars_systems === null) include_discordant_stars_systems = this.state.include_discordant_stars_systems;
+        if (include_expansion_systems === null) include_expansion_systems = this.state.include_expansion_systems;
+        if (include_base_systems === null) include_base_systems = this.state.include_base_systems;
         let bank_systems = new SystemBox([], []);
-        for(let system of this.system_box.systems) {
-            if(
+        for (const system of this.system_box.systems) {
+            if (
                 (
-                    map===null
+                    map === null
                     || !map.containsSystem(system.id)
                 )
                 && (
-                    system.id<59
-                    || include_expansion_systems
-                )
-                && (
-                    system.id>=59
-                    || include_base_systems
+                    (system.id < 59 && include_base_systems)
+                    || (system.id >= 59 && system.id <= 80 && include_expansion_systems)
+                    || (system.id >= 4253 && system.id <= 4276 && include_discordant_stars_systems)
+                    || (system.id.toString().slice(0, 2) == 'er' && include_eronous_systems)
                 )
             ) {
                  bank_systems.systems.push(system);
