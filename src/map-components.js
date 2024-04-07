@@ -472,8 +472,14 @@ export class SystemComponent extends React.Component {
         if(this.props.eval_variables && system.planets.length>0) {
             value_div = (<div className="value">={system.evaluate(this.props.eval_variables)}</div>);
         }
-        if(system.wormhole !== null) {
-            switch(system.wormhole) {
+        // If it contains both wormholes and anomalies, will display the two alternating
+        // e.g. a system with an alpha, beta and supernova with display (from left to right), the alpha,
+        // then the nova, then the beta, instead of displaying the wormholes then the nova.
+        // This is to prevent anomalies from clipping outside the hex, and to satisfy a bit of compulsion.
+        // Systems with 1 anomaly and 1 wormhole should display the same.
+        if(system.wormhole.length > 0 && system.anomaly.length > 0){
+            for (let i = 0; i < system.wormhole.length && system.anomaly.length; i++){
+                switch(system.wormhole[i]) {
                 case WORMHOLES.ALPHA:
                     extras.push(<div className="wormhole alpha" key="alpha_wh">a</div>);
                     break;
@@ -482,9 +488,7 @@ export class SystemComponent extends React.Component {
                     break;
                 default: break;
             }
-        }
-        if(system.anomaly !== null) {
-            switch(system.anomaly) {
+                switch(system.anomaly[i]) {
                 case ANOMALIES.SUPERNOVA:
                     extras.push(<div className="supernova" key="supernova"></div>);
                     break;
@@ -507,6 +511,49 @@ export class SystemComponent extends React.Component {
                     break;
                 default:
                     break;
+                }
+            }
+        } else {
+            if(system.wormhole.length > 0) {
+                system.wormhole.forEach(wormhole => {
+                    switch(wormhole) {
+                        case WORMHOLES.ALPHA:
+                            extras.push(<div title="Alpha Wormhole" className="wormhole alpha" key="alpha_wh">α</div>);
+                            break;
+                        case WORMHOLES.BETA:
+                            extras.push(<div title="Beta Wormhole" className="wormhole beta" key="alpha_wh">β</div>);
+                            break;
+                        default: break;
+                    }
+                })
+            }
+            if(system.anomaly.length > 0) {
+                system.anomaly.forEach(anomaly => {
+                    switch(anomaly) {
+                        case ANOMALIES.SUPERNOVA:
+                            extras.push(<div title="Supernova" className="supernova" key="supernova"></div>);
+                            break;
+                        case ANOMALIES.GRAVITY_RIFT:
+                            extras.push(<div title="Gravity Rift" className="gravity-rift" key="gravity-rift"></div>);
+                            break;
+                        case ANOMALIES.NEBULA:
+                            extras.push(<div title="Nebula" className="nebula" key="nebula"></div>);
+                            break;
+                        case ANOMALIES.ASTEROID_FIELD:
+                            extras.push(
+                                <div title="Asteroid Field" className="asteroid-field" key="asteroid-field">
+                                    <div className="asteroid a"></div>
+                                    <div className="asteroid b"></div>
+                                    <div className="asteroid c"></div>
+                                    <div className="asteroid d"></div>
+                                    <div className="asteroid e"></div>
+                                </div>
+                            );
+                            break;
+                        default:
+                            break;
+                    }
+                });
             }
         }
         let rex_class = "";

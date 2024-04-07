@@ -98,8 +98,16 @@ export class PlanetBox {
 export class System {
     constructor(obj_data, planet_box) {
         this.id = obj_data.id;
-        this.anomaly = obj_data.anomaly;
-        this.wormhole = obj_data.wormhole;
+        if (obj_data.anomaly === null) {
+            this.anomaly = []
+        } else {
+            this.anomaly = obj_data.anomaly
+        }
+        if (obj_data.wormhole === null) {
+            this.wormhole = []
+        } else {
+            this.wormhole = obj_data.wormhole
+        }
         this.planets = [];
         for(let planet_name of obj_data.planets) {
             let plToAdd = planet_box.getPlanetByName(planet_name);
@@ -143,41 +151,45 @@ export class System {
     getDistanceModifier(variables = {}) {
         let v = variables.data;
         let value = v.DISTANCE_MOD_BASE;
-        if(this.isBlue() || this.isMecatolRexSystem()) {
-            if(v.DISTANCE_MOD_PLANET===false) return false;
-            value+=v.DISTANCE_MOD_PLANET;
-            if(this.wormhole!==null) {
-                if(v.DISTANCE_MOD_PLANET_WORMHOLE===false) return false;
-                value+=v.DISTANCE_MOD_PLANET_WORMHOLE;
+        if (this.isBlue() || this.isMecatolRexSystem()) {
+            if (v.DISTANCE_MOD_PLANET === false) return false;
+            value += v.DISTANCE_MOD_PLANET;
+            if (this.wormhole.length > 0) {
+                if (v.DISTANCE_MOD_PLANET_WORMHOLE === false) return false;
+                value += v.DISTANCE_MOD_PLANET_WORMHOLE;
             }
-        } else if(this.anomaly===null) {
-            if(this.wormhole!==null) {
-                if(v.DISTANCE_MOD_EMPTY_WORMHOLE===false) return false;
-                value+=v.DISTANCE_MOD_EMPTY_WORMHOLE;
+        } else if (this.anomaly.length === 0) {
+            if (this.wormhole.length > 0) {
+                if (v.DISTANCE_MOD_EMPTY_WORMHOLE === false) return false;
+                value += v.DISTANCE_MOD_EMPTY_WORMHOLE;
             } else {
-                if(v.DISTANCE_MOD_EMPTY===false) return false;
-                value+=v.DISTANCE_MOD_EMPTY;
+                if (v.DISTANCE_MOD_EMPTY === false) return false;
+                value += v.DISTANCE_MOD_EMPTY;
             }
-        }
-        switch(this.anomaly) {
+        } else if (this.anomaly.length > 0) {
+            this.anomaly.forEach(anomaly => {
+                switch (anomaly) {
             case ANOMALIES.ASTEROID_FIELD:
-                if(v.DISTANCE_MOD_ASTEROID_FIELD===false) return false;
-                value+=v.DISTANCE_MOD_ASTEROID_FIELD;
+                        if (v.DISTANCE_MOD_ASTEROID_FIELD === false || value === false) value = false;
+                        value += v.DISTANCE_MOD_ASTEROID_FIELD;
                 break;
             case ANOMALIES.GRAVITY_RIFT:
-                if(v.DISTANCE_MOD_GRAVITY_RIFT===false) return false;
-                value+=v.DISTANCE_MOD_GRAVITY_RIFT;
+                        if (v.DISTANCE_MOD_GRAVITY_RIFT === false || value === false) return value = false;
+                        value += v.DISTANCE_MOD_GRAVITY_RIFT;
                 break;
             case ANOMALIES.NEBULA:
-                if(v.DISTANCE_MOD_NEBULA===false) return false;
-                value+=v.DISTANCE_MOD_NEBULA;
+                        if (v.DISTANCE_MOD_NEBULA === false || value === false) return value = false;
+                        value += v.DISTANCE_MOD_NEBULA;
                 break;
             case ANOMALIES.SUPERNOVA:
-                if(v.DISTANCE_MOD_SUPERNOVA===false) return false;
-                value+=v.DISTANCE_MOD_SUPERNOVA;
+                        if (v.DISTANCE_MOD_SUPERNOVA === false || value === false) return value = false;
+                        value += v.DISTANCE_MOD_SUPERNOVA;
                 break;
             default:
                 break;
+                }
+            }
+            )
         }
         return value;
     }
@@ -190,7 +202,7 @@ export class System {
     }
 
     isRed() {
-        if(this.planets.length<1 || this.anomaly !== null) return true;
+        if (this.planets.length < 1 || this.anomaly.length > 0) return true;
         return false;
     }
 
@@ -223,19 +235,23 @@ export class System {
 				planet.name+" ("+planet.resources+"/"+planet.influence+tech+")"
 			);
         }
-        if(system.wormhole !== null) {
-            switch(system.wormhole) {
+        if (system.wormhole.length > 0) {
+            system.wormhole.forEach(wormhole => {
+                switch (wormhole) {
                 case WORMHOLES.ALPHA:
-                    name_array.push("(a)");
+                        name_array.push("(α)");
                     break;
                 case WORMHOLES.BETA:
-                    name_array.push("(b)");
+                        name_array.push("(β)");
+                        break;
                     break;
                 default: break;
             }
+            })
         }
-        if(system.anomaly !== null) {
-            switch(system.anomaly) {
+        if (system.anomaly.length > 0) {
+            system.anomaly.forEach(anomaly => {
+                switch (anomaly) {
                 case ANOMALIES.SUPERNOVA:
                     name_array.push("Supernova");
                     break;
@@ -251,6 +267,7 @@ export class System {
                 default:
                     break;
             }
+            })
         }
         if(name_array.length===0) name_array.push("Empty Space");
         return system.id+": "+name_array.join(", ");
@@ -308,16 +325,16 @@ export class SystemBox {
         return new_system_box;
     }
 
-    getWormholeSystems(type=null) {
+    getWormholeSystems(type = null) {
         let systems_to_return = [];
-        for(let one_sys of this.systems) {
-            if(
-                one_sys.wormhole!==null
+        for (const one_sys of this.systems) {
+            if (
+                one_sys.wormhole.length > 0
                 &&
                 (
-                    type===null
+                    type === null
                     ||
-                    one_sys.wormhole===type
+                    one_sys.wormhole.includes(type)
                 )
             ) {
                 systems_to_return.push(one_sys);
@@ -642,24 +659,28 @@ export class Map {
 
     isLegal() {
         let is_legal = true;
-        for(let map_space of this.spaces) {
-            if(map_space.type===MAP_SPACE_TYPES.SYSTEM && map_space.system.wormhole !== null) {
-                for(let one_sys of this.getAdjacentSystems(map_space)) {
-                    if(one_sys.type===MAP_SPACE_TYPES.SYSTEM && one_sys.system.wormhole===map_space.system.wormhole) {
+        for (const map_space of this.spaces) {
+            if (map_space.type === MAP_SPACE_TYPES.SYSTEM && map_space.system.wormhole.length > 0) {
+                for (const one_sys of this.getAdjacentSystems(map_space)) {
+                    if (one_sys.type === MAP_SPACE_TYPES.SYSTEM
+                        &&
+                        // Tests if a wormhole in one system matches one in an adjacent system
+                        one_sys.system.wormhole.filter(wormhole => map_space.system.wormhole.includes(wormhole)).length > 0) {
                         is_legal = false;
                         break;
                     }
                 }
             }
-            if(map_space.type===MAP_SPACE_TYPES.SYSTEM && map_space.system.anomaly !== null) {
-                for(let one_sys of this.getAdjacentSystems(map_space)) {
-                    if(one_sys.type===MAP_SPACE_TYPES.SYSTEM && one_sys.system.anomaly!==null) {
+            if (map_space.type === MAP_SPACE_TYPES.SYSTEM && map_space.system.anomaly.length > 0) {
+                for (const one_sys of this.getAdjacentSystems(map_space)) {
+                    if (one_sys.type === MAP_SPACE_TYPES.SYSTEM
+                        && one_sys.system.anomaly.length > 0) {
                         is_legal = false;
                         break;
                     }
                 }
             }
-            if(!is_legal) break;
+            if (!is_legal) break;
         }
         return is_legal;
     }
@@ -905,11 +926,14 @@ export class Map {
 
     getMatchingWormholeSpaces(space) {
         let matching_spaces = [];
-        if(space.type===MAP_SPACE_TYPES.SYSTEM && space.system.wormhole!==null) {
-            for(let one_space of this.spaces) {
-                if(
-                    one_space.type===MAP_SPACE_TYPES.SYSTEM &&
-                    one_space.system.wormhole===space.system.wormhole &&
+        if (space.type === MAP_SPACE_TYPES.SYSTEM && space.system.wormhole.length > 0) {
+            for (const one_space of this.spaces) {
+                if (
+                    one_space.type === MAP_SPACE_TYPES.SYSTEM
+                    &&
+                    // Tests if a wormhole in one system matches one in an adjacent system
+                    (one_space.system.wormhole.length === 0 ? [] : one_space.system.wormhole).filter(wormhole => space.system.wormhole.includes(wormhole)).length > 0
+                    &&
                     one_space.system.id !== space.system.id
                 ) {
                     matching_spaces.push(one_space);
