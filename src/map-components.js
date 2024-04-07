@@ -36,6 +36,12 @@ export class SystemBankComponent extends React.Component {
     handleExpansionCheckboxChange(e) {
         this.props.toggleExpansion();
     }
+    handleDiscordantStarsCheckboxChange(e) {
+        this.props.toggleDiscordantStars();
+    }
+    handleEronousCheckboxChange(e) {
+        this.props.toggleEronous();
+    }
     handleBaseCheckboxChange(e) {
         this.props.toggleBaseSystems();
     }
@@ -100,6 +106,24 @@ export class SystemBankComponent extends React.Component {
                             onChange={(e)=>this.handleExpansionCheckboxChange(e)}
                         />
                         <label htmlFor="include-expansion-systems"> Expansion Systems</label>
+                    </p>
+                    <p className="control">
+                        <input
+                            id="include-ds-systems"
+                            type="checkbox"
+                            checked={this.props.include_discordant_stars_systems}
+                            onChange={(e)=>this.handleDiscordantStarsCheckboxChange(e)}
+                        />
+                        <label htmlFor="include-ds-systems"> Uncharted Space Systems (DS)</label>
+                    </p>
+                    <p className="control">
+                        <input
+                            id="include-eronous-systems"
+                            type="checkbox"
+                            checked={this.props.include_eronous_systems}
+                            onChange={(e)=>this.handleEronousCheckboxChange(e)}
+                        />
+                        <label htmlFor="include-eronous-systems"> Ascendent Sun Systems (Eronous)</label>
                     </p>
                     <p className="control">
                         <span className="select is-small">
