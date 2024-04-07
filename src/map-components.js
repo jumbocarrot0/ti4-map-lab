@@ -493,7 +493,7 @@ export class SystemComponent extends React.Component {
         let id_div = (<div className="id">{system.id}</div>);
         let extras = [];
         let value_div = null;
-        if(this.props.eval_variables && system.planets.length>0) {
+        if(this.props.eval_variables) {
             value_div = (<div className="value">={system.evaluate(this.props.eval_variables)}</div>);
         }
         // If it contains both wormholes and anomalies, will display the two alternating
@@ -504,13 +504,13 @@ export class SystemComponent extends React.Component {
         if(system.wormhole.length > 0 && system.anomaly.length > 0){
             for (let i = 0; i < system.wormhole.length && system.anomaly.length; i++){
                 switch(system.wormhole[i]) {
-                case WORMHOLES.ALPHA:
+                    case WORMHOLES.ALPHA:
                         extras.push(<div title="Alpha Wormhole" className="wormhole alpha" key="alpha_wh">α</div>);
-                    break;
-                case WORMHOLES.BETA:
+                        break;
+                    case WORMHOLES.BETA:
                         extras.push(<div title="Beta Wormhole" className="wormhole beta" key="alpha_wh">β</div>);
-                    break;
-case WORMHOLES.GAMMA:
+                        break;
+                    case WORMHOLES.GAMMA:
                         extras.push(<div title="Gamma Wormhole" className="wormhole gamma" key="alpha_wh">γ</div>);
                         break;
                     case WORMHOLES.EPSILON:
@@ -531,31 +531,31 @@ case WORMHOLES.GAMMA:
                     case WORMHOLES.KAPPA:
                         extras.push(<div title="Kappa Wormhole" className="wormhole kappa" key="alpha_wh">κ</div>);
                         break;
-                default: break;
-            }
+                    default: break;
+                }
                 switch(system.anomaly[i]) {
-                case ANOMALIES.SUPERNOVA:
+                    case ANOMALIES.SUPERNOVA:
                         extras.push(<div title="Supernova" className="supernova" key="supernova"></div>);
-                    break;
-                case ANOMALIES.GRAVITY_RIFT:
+                        break;
+                    case ANOMALIES.GRAVITY_RIFT:
                         extras.push(<div title="Gravity Rift" className="gravity-rift" key="gravity-rift"></div>);
-                    break;
-                case ANOMALIES.NEBULA:
+                        break;
+                    case ANOMALIES.NEBULA:
                         extras.push(<div title="Nebula" className="nebula" key="nebula"></div>);
-                    break;
-                case ANOMALIES.ASTEROID_FIELD:
-                    extras.push(
+                        break;
+                    case ANOMALIES.ASTEROID_FIELD:
+                        extras.push(
                             <div title="Asteroid Field" className="asteroid-field" key="asteroid-field">
-                            <div className="asteroid a"></div>
-                            <div className="asteroid b"></div>
-                            <div className="asteroid c"></div>
-                            <div className="asteroid d"></div>
-                            <div className="asteroid e"></div>
-                        </div>
-                    );
-                    break;
-                default:
-                    break;
+                                <div className="asteroid a"></div>
+                                <div className="asteroid b"></div>
+                                <div className="asteroid c"></div>
+                                <div className="asteroid d"></div>
+                                <div className="asteroid e"></div>
+                            </div>
+                        );
+                        break;
+                    default:
+                        break;
                 }
             }
         } else {
@@ -568,7 +568,7 @@ case WORMHOLES.GAMMA:
                         case WORMHOLES.BETA:
                             extras.push(<div title="Beta Wormhole" className="wormhole beta" key="alpha_wh">β</div>);
                             break;
-case WORMHOLES.GAMMA:
+                        case WORMHOLES.GAMMA:
                             extras.push(<div title="Gamma Wormhole" className="wormhole gamma" key="alpha_wh">γ</div>);
                             break;
                         case WORMHOLES.EPSILON:

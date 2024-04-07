@@ -2,11 +2,11 @@ import React from 'react';
 import $ from 'jquery';
 import ls from "local-storage";
 
-import {WORMHOLES} from "../data/tile_data";
+import { WORMHOLES } from "../data/tile_data";
 import default_variables from '../data/default_evaluators.json';
 import map_string_order from '../data/map_string_order.json';
 
-import {getObjFromCoord, SystemBox} from "../map-logic";
+import { getObjFromCoord, SystemBox } from "../map-logic";
 import {
     SYSTEM_FORMATS,
     MapComponent,
@@ -17,7 +17,7 @@ import {
     JSONDownloadButton,
     JSONUploadButton,
 } from "../download-helpers";
-import {BaseEditor} from "./base-editor";
+import { BaseEditor } from "./base-editor";
 import {
     shuffle,
     compareByID,
@@ -39,9 +39,8 @@ export class MapEditor extends BaseEditor {
         this.state.option_include_all_wormholes = false;
         this.state.option_include_two_wormhole_colors = true;
         this.state.target_blue_total = "random";
-        this.state.bank_systems = this.syncBankSystems(starting_layout, true, true);
-        this.state.eval_option="default_0";
-        this.state.eval_variables=default_variables[0];
+        this.state.eval_option = "default_0";
+        this.state.eval_variables = default_variables[0];
         this.state.home_values = {};
         this.state.balance_difference = null;
         this.state.map_string = "";
@@ -50,10 +49,10 @@ export class MapEditor extends BaseEditor {
             "dont_move_anomalies": false,
             "dont_move_empty": false,
         };
-this.state.include_eronous_systems = false;
+        this.state.include_eronous_systems = false;
         this.state.include_discordant_stars_systems = true;
         this.state.include_expansion_systems = true;
-		this.state.include_base_systems = true;
+        this.state.include_base_systems = true;
         this.state.bank_systems = this.syncBankSystems(starting_layout,
             {
                 include_eronous_systems: this.state.include_eronous_systems,
@@ -62,7 +61,7 @@ this.state.include_eronous_systems = false;
                 include_base_systems: this.state.include_base_systems
             });
         this.state.long_op = false;
-        if(this.props.state_to_import) {
+        if (this.props.state_to_import) {
             let matching_options = this.getOptions().filter(option => option.index === this.props.state_to_import.selected_item);
             let matching_evals = this.getEvalOptions().filter(option => option.index === this.props.state_to_import.eval_option);
             if (matching_options.length > 0 && matching_evals.length > 0) {
@@ -71,13 +70,13 @@ this.state.include_eronous_systems = false;
         }
     }
 
-    setMap(new_map, home_values=null, balance_difference=null, eval_var=null) {
-        if(new_map.isComplete()) {
-            if(home_values===null) {
-                if(eval_var===null) eval_var = this.state.eval_variables;
+    setMap(new_map, home_values = null, balance_difference = null, eval_var = null) {
+        if (new_map.isComplete()) {
+            if (home_values === null) {
+                if (eval_var === null) eval_var = this.state.eval_variables;
                 home_values = this.getHomeValues(new_map, eval_var);
             }
-            if(balance_difference===null) {
+            if (balance_difference === null) {
                 balance_difference = this.getBalanceDifference(home_values);
             }
         } else {
@@ -112,22 +111,22 @@ this.state.include_eronous_systems = false;
                     || (system.id.toString().slice(0, 2) == 'er' && include_eronous_systems)
                 )
             ) {
-                 bank_systems.systems.push(system);
-             }
+                bank_systems.systems.push(system);
+            }
         }
         bank_systems.systems.sort(compareByID);
         return bank_systems;
     }
 
     setActiveBankSystem(system) {
-        this.setState({"selected_bank_system": system});
+        this.setState({ "selected_bank_system": system });
     }
 
     handleSelectChange() {
         let new_value = this.getSelectValue();
         let new_check = this.getSelectNewMapValue();
-        if(!(new_check === null)) {
-            if(this.getSelectNewMapType() === "newc") {
+        if (!(new_check === null)) {
+            if (this.getSelectNewMapType() === "newc") {
                 this.loadCustomLayout(new_check);
             } else {
                 this.loadDefault(new_check);
@@ -142,7 +141,7 @@ this.state.include_eronous_systems = false;
         let e_kind = value.split("_")[0];
         let e_index = value.split("_")[1];
         let e_var = null;
-        if(e_kind==="default") {
+        if (e_kind === "default") {
             e_var = default_variables[e_index];
         } else {
             e_var = ls.get(this.props.eval_storage_key)[e_index];
@@ -154,18 +153,18 @@ this.state.include_eronous_systems = false;
         this.setMap(this.state.map, null, null, e_var);
     }
 
-    getSelectNewMapValue(selected_item=null) {
+    getSelectNewMapValue(selected_item = null) {
         let new_value = selected_item;
-        if(new_value===null) {
+        if (new_value === null) {
             new_value = this.getSelectValue();
         }
         new_value = new_value.toString();
         let new_check = new_value.split("_");
-        if(
-            new_check.length===2
+        if (
+            new_check.length === 2
             &&
-            (new_check[0]==="new"||new_check[0]==="newc")) {
-            return(parseInt(new_check[1]));
+            (new_check[0] === "new" || new_check[0] === "newc")) {
+            return (parseInt(new_check[1]));
         }
         return null;
     }
@@ -175,61 +174,61 @@ this.state.include_eronous_systems = false;
     }
 
     getNewStringValue() {
-        if(!this.state) return "new_0";
-        if(this.state.selected_item.toString().substr(0, 3)==="new") return this.state.selected_item;
+        if (!this.state) return "new_0";
+        if (this.state.selected_item.toString().substr(0, 3) === "new") return this.state.selected_item;
         return "new_0";
     }
 
-    isSelectNew(selected_item=null) {
-        return this.getSelectNewMapValue(selected_item)!==null;
+    isSelectNew(selected_item = null) {
+        return this.getSelectNewMapValue(selected_item) !== null;
     }
 
     handleFormatDisplayChange() {
         let int_select = document.getElementById("select-system-display");
-        this.setState({"system_format": parseInt(int_select.options[int_select.selectedIndex].value)});
+        this.setState({ "system_format": parseInt(int_select.options[int_select.selectedIndex].value) });
     }
 
     onSelectedSystemDrag(event) {
         this.setState({
-          draggedSystem: this.state.selected_bank_system,
-          message: "",
+            draggedSystem: this.state.selected_bank_system,
+            message: "",
         });
     }
 
     onSystemDrag(event, system) {
         this.setState({
-          draggedSystem: system,
-          message: "",
+            draggedSystem: system,
+            message: "",
         });
     }
 
     onSystemDragEnd(event) {
         this.setState({
-          draggedSystem: null,
-          message: "",
+            draggedSystem: null,
+            message: "",
         });
     }
 
     onSystemDropped(event, space_index) {
-        if(this.state.draggedSystem !== null) {
+        if (this.state.draggedSystem !== null) {
             let new_map = this.state.map.makeCopy();
             let selected_bank_system = this.state.selected_bank_system;
             let is_changed = false;
-            if(space_index !== null) {
+            if (space_index !== null) {
                 let space = new_map.spaces[space_index];
-                if(space.type === MAP_SPACE_TYPES.OPEN) {
-                    if(this.state.selected_bank_system !== null && this.state.selected_bank_system.id === this.state.draggedSystem.id) {
+                if (space.type === MAP_SPACE_TYPES.OPEN) {
+                    if (this.state.selected_bank_system !== null && this.state.selected_bank_system.id === this.state.draggedSystem.id) {
                         selected_bank_system = null;
                     }
                     let old_space = new_map.getSpaceBySystemID(this.state.draggedSystem.id);
-                    if(old_space) {
+                    if (old_space) {
                         old_space.type = MAP_SPACE_TYPES.OPEN;
                         old_space.system = null;
                     }
                     space.system = this.state.draggedSystem;
                     space.type = MAP_SPACE_TYPES.SYSTEM;
                     is_changed = true;
-                } else if(space.type === MAP_SPACE_TYPES.SYSTEM && !space.system.isMecatolRexSystem()) {
+                } else if (space.type === MAP_SPACE_TYPES.SYSTEM && !space.system.isMecatolRexSystem()) {
                     let replaced_system = space.system;
                     if (selected_bank_system !== null && selected_bank_system.id === this.state.draggedSystem.id) {
                         selected_bank_system = replaced_system;
@@ -241,7 +240,7 @@ this.state.include_eronous_systems = false;
                 }
             } else {
                 let old_space = new_map.getSpaceBySystemID(this.state.draggedSystem.id);
-                if(old_space) {
+                if (old_space) {
                     selected_bank_system = old_space.system;
                     old_space.type = MAP_SPACE_TYPES.OPEN;
                     old_space.system = null;
@@ -249,9 +248,9 @@ this.state.include_eronous_systems = false;
                 }
             }
 
-            if(is_changed) {
+            if (is_changed) {
                 this.setMap(new_map);
-                this.setState({"selected_bank_system": selected_bank_system,});
+                this.setState({ "selected_bank_system": selected_bank_system, });
             }
             this.onSystemDragEnd(event);
         }
@@ -288,15 +287,15 @@ this.state.include_eronous_systems = false;
     handleTargetRatioChange() {
         let int_select = document.getElementById("target-ratio");
         let int_value = int_select.options[int_select.selectedIndex].value
-        if(int_value !== "random") int_value = parseInt(int_value);
-        this.setState({"target_blue_total": int_value});
+        if (int_value !== "random") int_value = parseInt(int_value);
+        this.setState({ "target_blue_total": int_value });
     }
 
     loadDefault(index) {
         let toLoad = this.default_layouts[index];
-        this.setLayout(toLoad, "new_"+index);
+        this.setLayout(toLoad, "new_" + index);
         let loadedTitle = toLoad.title;
-        let new_message = "Blank map '"+loadedTitle+"' displayed.";
+        let new_message = "Blank map '" + loadedTitle + "' displayed.";
         this.setState({
             "message": new_message,
             "input_title": loadedTitle,
@@ -307,12 +306,12 @@ this.state.include_eronous_systems = false;
         let toLoad = ls.get(this.props.layout_storage_key)[index];
         let new_map = this.getLayoutFromJSON(toLoad.data);
         let loadedTitle = toLoad.title;
-        let new_message = "Custom layout '"+loadedTitle+"' displayed.";
+        let new_message = "Custom layout '" + loadedTitle + "' displayed.";
         this.setMap(new_map);
         this.setState({
             "message": new_message,
             "input_title": loadedTitle,
-            "selected_item": "newc_"+index,
+            "selected_item": "newc_" + index,
         });
     }
 
@@ -326,13 +325,13 @@ this.state.include_eronous_systems = false;
         let final_string = "";
         let is_first = "";
         let coord_order = map_string_order.slice();
-        if(map.spaces.length<=37) coord_order.splice(36, 24);
-        for(let one_coor of coord_order) {
+        if (map.spaces.length <= 37) coord_order.splice(36, 24);
+        for (const one_coor of coord_order) {
             let one_space = getObjFromCoord(one_coor, map.spaces);
-            if(one_space && one_space.type===MAP_SPACE_TYPES.SYSTEM && one_space.system) {
-                final_string+=is_first+one_space.system.id;
+            if (one_space && one_space.type === MAP_SPACE_TYPES.SYSTEM && one_space.system) {
+                final_string += is_first + one_space.system.id;
             } else {
-                final_string+=is_first+"0";
+                final_string += is_first + "0";
             }
             is_first = " ";
         }
@@ -344,15 +343,15 @@ this.state.include_eronous_systems = false;
         let new_bank = this.state.bank_systems;
         let id_list = map_string.split(" ");
         let coord_list = map_string_order.slice();
-        if(id_list.length<=37) coord_list.splice(36, 24);
-        for(let [index, one_id_string] of id_list.entries()) {
+        if (id_list.length <= 37) coord_list.splice(36, 24);
+        for (const [index, one_id_string] of id_list.entries()) {
             let one_id = parseInt(one_id_string);
-            if(one_id!==0) {
+            if (one_id !== 0) {
                 let one_system = new_bank.getSystemByID(one_id);
-                if(!one_system) {
+                if (!one_system) {
                     let one_system_space = new_map.getSpaceBySystemID(one_id);
-                    if(!one_system_space) {
-                        this.setState({"message":"Space not found."});
+                    if (!one_system_space) {
+                        this.setState({ "message": "Space not found." });
                         return;
                     }
                     one_system = one_system_space.system;
@@ -361,31 +360,31 @@ this.state.include_eronous_systems = false;
                     new_bank = this.syncBankSystems(new_map);
                 }
                 let new_space = getObjFromCoord(coord_list[index], new_map.spaces);
-                if(!new_space) {
-                    this.setState({"message":"Invalid: Too many systems listed."});
+                if (!new_space) {
+                    this.setState({ "message": "Invalid: Too many systems listed." });
                     return;
                 }
-                if(new_space.type!==MAP_SPACE_TYPES.OPEN && new_space.type!==MAP_SPACE_TYPES.SYSTEM) {
-                    this.setState({"message":"Invalid: Placing system on improper space."});
+                if (new_space.type !== MAP_SPACE_TYPES.OPEN && new_space.type !== MAP_SPACE_TYPES.SYSTEM) {
+                    this.setState({ "message": "Invalid: Placing system on improper space." });
                     return;
                 }
-                if(new_space.type===MAP_SPACE_TYPES.SYSTEM && new_space.system.isMecatolRexSystem()) {
-                    this.setState({"message":"Invalid: Systems on top of Mecatol Rex."});
+                if (new_space.type === MAP_SPACE_TYPES.SYSTEM && new_space.system.isMecatolRexSystem()) {
+                    this.setState({ "message": "Invalid: Systems on top of Mecatol Rex." });
                     return;
                 }
-                if(new_space.type===MAP_SPACE_TYPES.OPEN) {
+                if (new_space.type === MAP_SPACE_TYPES.OPEN) {
                     new_space.type = MAP_SPACE_TYPES.SYSTEM;
                 }
                 new_space.system = one_system;
                 new_bank = this.syncBankSystems(new_map);
             }
         }
-        this.setState({"message": "Map string loaded."});
+        this.setState({ "message": "Map string loaded." });
         this.setMap(new_map);
     }
 
     clickedSpace(index) {
-        let newState = Object.assign({},{
+        let newState = Object.assign({}, {
             "message": "",
             "selected_bank_system": this.state.selected_bank_system,
         });
@@ -393,9 +392,9 @@ this.state.include_eronous_systems = false;
         let clickedSpace = new_map.spaces[index];
         let isChanged = false;
 
-        switch(clickedSpace.type) {
+        switch (clickedSpace.type) {
             case MAP_SPACE_TYPES.OPEN:
-                if(newState.selected_bank_system !== null) {
+                if (newState.selected_bank_system !== null) {
                     clickedSpace.system = newState.selected_bank_system;
                     clickedSpace.type = MAP_SPACE_TYPES.SYSTEM;
                     newState.selected_bank_system = null;
@@ -403,8 +402,8 @@ this.state.include_eronous_systems = false;
                 }
                 break;
             case MAP_SPACE_TYPES.SYSTEM:
-                if(!clickedSpace.system.isMecatolRexSystem()) {
-                    if(newState.selected_bank_system !== null) {
+                if (!clickedSpace.system.isMecatolRexSystem()) {
+                    if (newState.selected_bank_system !== null) {
                         let replacement_system = newState.selected_bank_system;
                         newState.selected_bank_system = clickedSpace.system;
                         clickedSpace.system = replacement_system;
@@ -421,7 +420,7 @@ this.state.include_eronous_systems = false;
                 break;
         }
 
-        if(isChanged) {
+        if (isChanged) {
             this.setState(newState);
             this.setMap(new_map);
         }
@@ -429,11 +428,11 @@ this.state.include_eronous_systems = false;
     }
 
     autoCompleteStart() {
-        if(!this.state.long_op) {
+        if (!this.state.long_op) {
             this.setState({
-                    "message": "Thinking...",
-                    "long_op": true,
-                },
+                "message": "Thinking...",
+                "long_op": true,
+            },
                 () => {
                     setTimeout(this.autoComplete.bind(this), 1);
                 }
@@ -447,16 +446,16 @@ this.state.include_eronous_systems = false;
             "system_box": this.state.bank_systems.makeCopy(),
         }];
         let gotamap = true;
-        while(!map_history[map_history.length-1].map.isComplete()) {
+        while (!map_history[map_history.length - 1].map.isComplete()) {
             map_history = this._autoCompleteSteps(map_history, 1);
-            if(map_history===false) {
-                gotamap=false;
+            if (map_history === false) {
+                gotamap = false;
                 break;
             }
         }
         let message = "Unable to find a legal completion of this map.";
-        if(gotamap) {
-            this.setMap(map_history[map_history.length-1].map);
+        if (gotamap) {
+            this.setMap(map_history[map_history.length - 1].map);
             message = "Map completed randomly.";
             this.setState({
                 "message": message,
@@ -466,33 +465,33 @@ this.state.include_eronous_systems = false;
         }
     }
 
-    _autoCompleteSteps(current_history, steps_forward, current_try_total=0, backwards_length=null) {
-        if(backwards_length===null) backwards_length=current_history.length;
+    _autoCompleteSteps(current_history, steps_forward, current_try_total = 0, backwards_length = null) {
+        if (backwards_length === null) backwards_length = current_history.length;
         let starting_length = current_history.length;
-        for(let tries=current_try_total; tries<LOOPS_TO_TRY; tries++) {
-            let new_history = this._addOneSystem(current_history[current_history.length-1]);
-            if(!(new_history===false)) {
+        for (let tries = current_try_total; tries < LOOPS_TO_TRY; tries++) {
+            let new_history = this._addOneSystem(current_history[current_history.length - 1]);
+            if (!(new_history === false)) {
                 current_history.push(new_history);
-                if(current_history.length >= starting_length+steps_forward) {
+                if (current_history.length >= starting_length + steps_forward) {
                     return current_history;
                 } else {
-                    return this._autoCompleteSteps(current_history, steps_forward-1, tries, backwards_length);
+                    return this._autoCompleteSteps(current_history, steps_forward - 1, tries, backwards_length);
                 }
             }
         }
         let steps_forward_add = 0;
-        while(current_history.length>=backwards_length) {
+        while (current_history.length >= backwards_length) {
             steps_forward_add++;
             current_history.pop();
         }
-        if(current_history.length===0) {
+        if (current_history.length === 0) {
             return false;
         }
         return this._autoCompleteSteps(
             current_history,
-            steps_forward+steps_forward_add,
+            steps_forward + steps_forward_add,
             0,
-            backwards_length-1);
+            backwards_length - 1);
     }
 
     _addOneSystem(newest_history) {
@@ -570,8 +569,8 @@ this.state.include_eronous_systems = false;
                         )
                     ) can_add = false;
                 }
-                }
-                if (can_add) avail_sys_pool.push(one_sys);
+            }
+            if (can_add) avail_sys_pool.push(one_sys);
 
         }
         if (this.state.target_blue_total !== "random") {
@@ -615,8 +614,8 @@ this.state.include_eronous_systems = false;
 
     getHomeValues(map = this.state.map, evars = this.state.eval_variables) {
         let home_values = {};
-        for(let [index, one_space] of map.spaces.entries()) {
-            if(one_space.type === MAP_SPACE_TYPES.HOME) {
+        for (const [index, one_space] of map.spaces.entries()) {
+            if (one_space.type === MAP_SPACE_TYPES.HOME) {
                 home_values[index.toString()] = map.getHomeValue(
                     one_space, evars,
                 );
@@ -628,28 +627,28 @@ this.state.include_eronous_systems = false;
     getBalanceDifference(home_values = this.state.home_values) {
         let max = null;
         let min = null;
-        for(let one_home_key in home_values) {
-            if(home_values.hasOwnProperty(one_home_key)) {
+        for (const one_home_key in home_values) {
+            if (home_values.hasOwnProperty(one_home_key)) {
                 if (max === null || home_values[one_home_key] > max) max = home_values[one_home_key];
                 if (min === null || home_values[one_home_key] < min) min = home_values[one_home_key];
             }
         }
-        return max-min;
+        return max - min;
     }
 
     handleBalanceOptionChange(which_option) {
         let options = Object.assign({}, this.state.balance_options);
         options[which_option] = !options[which_option];
-        this.setState({"balance_options": options});
+        this.setState({ "balance_options": options });
     }
 
     improveBalanceStart() {
-        if(!this.state.long_op) {
+        if (!this.state.long_op) {
             this.setState({
-                    "message": "Thinking...",
-                    "long_op": true,
-                },
-                ()=>{
+                "message": "Thinking...",
+                "long_op": true,
+            },
+                () => {
                     setTimeout(this.improveBalance.bind(this), 1);
                 }
             );
@@ -657,23 +656,23 @@ this.state.include_eronous_systems = false;
     }
 
     improveBalance() {
-        return new Promise((resolve)=> {
+        return new Promise((resolve) => {
             let map = this.state.map;
             let eligible_system_spaces = [];
-            for (let [index, one_space] of map.spaces.entries()) {
+            for (const [index, one_space] of map.spaces.entries()) {
                 if (one_space.type === MAP_SPACE_TYPES.SYSTEM) {
                     if (
                         !one_space.system.isMecatolRexSystem()
                         &&
                         (!this.state.balance_options.dont_move_wormholes
-                            || one_space.system.wormhole === null)
+                            || one_space.system.wormhole.length === 0)
                         &&
                         (!this.state.balance_options.dont_move_anomalies
-                            || one_space.system.anomaly === null)
+                            || one_space.system.anomaly.length === 0)
                         &&
                         (!this.state.balance_options.dont_move_empty
-                            || one_space.system.wormhole !== null
-                            || one_space.system.anomaly !== null
+                            || one_space.system.wormhole.length > 0
+                            || one_space.system.anomaly.length > 0
                             || one_space.system.planets.length > 0)
                     ) eligible_system_spaces.push(index);
                 }
@@ -689,10 +688,10 @@ this.state.include_eronous_systems = false;
                 for (let b = 0; b < eligible_system_spaces.length; b++) {
                     if (
                         a !== b
-						&&
-						this.state.map.spaces[eligible_system_spaces[a]].system.evaluate(this.state.eval_variables)
-						!== this.state.map.spaces[eligible_system_spaces[b]].system.evaluate(this.state.eval_variables)
-					) {
+                        &&
+                        this.state.map.spaces[eligible_system_spaces[a]].system.evaluate(this.state.eval_variables)
+                        !== this.state.map.spaces[eligible_system_spaces[b]].system.evaluate(this.state.eval_variables)
+                    ) {
                         new_map = this.state.map.makeCopy();
                         let replaced_system = new_map.spaces[eligible_system_spaces[b]].system;
                         new_map.spaces[eligible_system_spaces[b]].system = new_map.spaces[eligible_system_spaces[a]].system;
@@ -728,16 +727,16 @@ this.state.include_eronous_systems = false;
 
     getEvalOptions() {
         let options = [];
-        for(let [index, one_default] of default_variables.entries()) {
+        for (const [index, one_default] of default_variables.entries()) {
             options.push({
-                "index": "default_"+index,
+                "index": "default_" + index,
                 "title": one_default.title,
             })
         }
         let evals = ls.get(this.props.eval_storage_key) || [];
-        for(let [index, one_saved] of evals.entries() || []) {
+        for (const [index, one_saved] of evals.entries() || []) {
             options.push({
-                "index": "custom_"+index.toString(),
+                "index": "custom_" + index.toString(),
                 "title": one_saved.title,
             });
         }
@@ -746,21 +745,21 @@ this.state.include_eronous_systems = false;
 
     getOptions() {
         let options = [];
-        for(let [index, one_default] of this.default_layouts.entries()) {
+        for (const [index, one_default] of this.default_layouts.entries()) {
             options.push({
-                "index": "new_"+index,
-                "title": "New from default layout "+one_default.title,
+                "index": "new_" + index,
+                "title": "New from default layout " + one_default.title,
             });
         }
-        for(let [index, one_custom_l] of (ls.get(this.props.layout_storage_key) || []).entries()) {
-            if(this.getLayoutFromJSON(one_custom_l.data).areWarpsLogical()) {
+        for (const [index, one_custom_l] of (ls.get(this.props.layout_storage_key) || []).entries()) {
+            if (this.getLayoutFromJSON(one_custom_l.data).areWarpsLogical()) {
                 options.push({
                     "index": "newc_" + index,
                     "title": "New from custom layout " + one_custom_l.title,
                 });
             }
         }
-        for(let [index, one_saved] of this.state.saved_data.entries()) {
+        for (const [index, one_saved] of this.state.saved_data.entries()) {
             options.push({
                 "index": index,
                 "title": one_saved.title
@@ -789,7 +788,7 @@ this.state.include_eronous_systems = false;
             bank_systems: this.syncBankSystems(this.state.map, { include_expansion_systems: !this.state.include_expansion_systems }),
         });
     }
-	
+
     toggleBaseSystems() {
         this.setState({
             include_base_systems: !this.state.include_base_systems,
@@ -799,19 +798,19 @@ this.state.include_eronous_systems = false;
 
     render() {
         let is_legal = (<label className="button is-outlined is-small is-danger">Illegal</label>);
-        if(this.state.map.isLegal()) is_legal = (<label className="button is-small is-outlined is-success">Legal</label>);
+        if (this.state.map.isLegal()) is_legal = (<label className="button is-small is-outlined is-success">Legal</label>);
         let is_complete = (<label className="button is-outlined is-small is-danger">Incomplete</label>);
-        if(this.state.map.isComplete()) is_complete = (<label className="button is-small is-outlined is-success">Complete</label>);
+        if (this.state.map.isComplete()) is_complete = (<label className="button is-small is-outlined is-success">Complete</label>);
 
         let options = [];
-        for(let opt of this.getOptions()) {
+        for (const opt of this.getOptions()) {
             options.push(
                 <option value={opt.index} key={opt.index}>{opt.title}</option>
             );
         }
 
         let eval_options = [];
-        for(let opt of this.getEvalOptions()) {
+        for (const opt of this.getEvalOptions()) {
             eval_options.push(
                 <option value={opt.index} key={opt.index}>{opt.title}</option>
             );
@@ -823,27 +822,27 @@ this.state.include_eronous_systems = false;
         let open_spaces = this.state.map.getOpenSpacesTotal();
         let blue_avail = this.state.bank_systems.getBlueSystemTotal();
         let red_avail = this.state.bank_systems.getRedSystemTotal();
-        for(let s=0; s<=open_spaces; s++) {
-            if(s<=blue_avail && open_spaces-s<=red_avail) {
+        for (let s = 0; s <= open_spaces; s++) {
+            if (s <= blue_avail && open_spaces - s <= red_avail) {
                 auto_complete_ratios.push((
                     <option
-                        value={s+blue_total}
-                        key={s+blue_total}
+                        value={s + blue_total}
+                        key={s + blue_total}
                     >
-                        Blue/Red Target Ratio: {s+blue_total}/{open_spaces-s+red_total}
+                        Blue/Red Target Ratio: {s + blue_total}/{open_spaces - s + red_total}
                     </option>
                 ));
             }
 
         }
 
-        let bal_diff =  null;
-        if(this.state.balance_difference!==null) {
+        let bal_diff = null;
+        if (this.state.balance_difference !== null) {
             bal_diff = (<p className="control"><label className="label">Balance Gap: {this.state.balance_difference}</label></p>);
         }
 
 
-        return(
+        return (
             <div className="block">
                 <h2 className="title is-size-4">Map Editor</h2>
                 <div className="block map-lab-control-panel">
@@ -856,7 +855,7 @@ this.state.include_eronous_systems = false;
                                 <p className="control">
                                     <span className="select is-small">
                                         <select id="layout-select" value={this.state.selected_item}
-                                                onChange={() => this.handleSelectChange()}>
+                                            onChange={() => this.handleSelectChange()}>
                                             {options}
                                         </select>
                                     </span>
@@ -893,7 +892,7 @@ this.state.include_eronous_systems = false;
                                         type="text"
                                         id="layout-title"
                                         value={this.state.input_title}
-                                        onChange={function() {
+                                        onChange={function () {
                                             this.setState(
                                                 {
                                                     "input_title": document.getElementById("layout-title").value,
@@ -904,15 +903,15 @@ this.state.include_eronous_systems = false;
                                     />
                                 </p>
                                 <p className="control">
-                                    <button className="button is-small" onClick={()=>this.saveCurrent()}>Save</button>
+                                    <button className="button is-small" onClick={() => this.saveCurrent()}>Save</button>
                                 </p>
                                 <p className="control">
-                                    <button className="button is-small" onClick={()=>this.handleSelectChange()}>Reset</button>
+                                    <button className="button is-small" onClick={() => this.handleSelectChange()}>Reset</button>
                                 </p>
                                 <p className="control">
                                     <button
                                         className="button is-small"
-                                        onClick={()=>this.deleteCurrent()}
+                                        onClick={() => this.deleteCurrent()}
                                         disabled={this.isSelectNew(this.state.selected_item)}
                                     >Delete</button>
                                 </p>
@@ -920,7 +919,7 @@ this.state.include_eronous_systems = false;
                                     <JSONDownloadButton
                                         title="Download"
                                         className="button is-small"
-                                        getDownloadInfo={()=>this.getCurrentLayoutJSONFileInfo()}
+                                        getDownloadInfo={() => this.getCurrentLayoutJSONFileInfo()}
                                     />
                                 </p>
                             </div>
@@ -931,13 +930,13 @@ this.state.include_eronous_systems = false;
                             <label className="label">System Display:</label>
                         </div>
                         <div className="field-body">
-                             <div className="field is-grouped is-grouped-multiline">
+                            <div className="field is-grouped is-grouped-multiline">
                                 <p className="control">
                                     <span className="select is-small">
                                         <select
                                             id="select-system-display"
                                             value={this.state.system_format}
-                                            onChange={()=>this.handleFormatDisplayChange()}
+                                            onChange={() => this.handleFormatDisplayChange()}
                                         >
                                             <option value={SYSTEM_FORMATS.STREAMLINED}>Streamlined</option>
                                             <option value={SYSTEM_FORMATS.STREAMLINED_WITH_NAME}>Streamlined + Name</option>
@@ -971,7 +970,7 @@ this.state.include_eronous_systems = false;
                                         type="text"
                                         id="map-string"
                                         value={this.state.map_string}
-                                        onChange={function() {
+                                        onChange={function () {
                                             this.setState(
                                                 {
                                                     "map_string": document.getElementById("map-string").value,
@@ -982,7 +981,7 @@ this.state.include_eronous_systems = false;
                                     />
                                 </p>
                                 <p className="control">
-                                    <button className="button is-small" onClick={()=>this.loadMapFromString()}>
+                                    <button className="button is-small" onClick={() => this.loadMapFromString()}>
                                         Load From String
                                     </button>
                                 </p>
@@ -1000,7 +999,7 @@ this.state.include_eronous_systems = false;
                                     id="require-all-wormholes"
                                     type="checkbox"
                                     checked={this.state.option_include_all_wormholes}
-                                    onChange={()=>this.handleIncludeWormholesChange()}
+                                    onChange={() => this.handleIncludeWormholesChange()}
                                 />
                                 <label htmlFor="require-all-wormholes"> Require All Wormhole Tiles</label>
                             </p>
@@ -1018,7 +1017,7 @@ this.state.include_eronous_systems = false;
                                     id="pair-wormholes"
                                     type="checkbox"
                                     checked={this.state.option_pair_wormholes}
-                                    onChange={()=>this.handlePairWormholesChange()}
+                                    onChange={() => this.handlePairWormholesChange()}
                                 />
                                 <label htmlFor="pair-wormholes"> Pair Wormholes</label>
                             </p>
@@ -1038,7 +1037,7 @@ this.state.include_eronous_systems = false;
                                     <select
                                         id="target-ratio"
                                         value={this.state.target_blue_total}
-                                        onChange={()=>this.handleTargetRatioChange()}
+                                        onChange={() => this.handleTargetRatioChange()}
                                     >
                                         {auto_complete_ratios}
                                     </select>
@@ -1046,12 +1045,12 @@ this.state.include_eronous_systems = false;
                             </p>
                             <p className="control">
                                 <button
-                                    onClick={()=>this.autoCompleteStart()}
+                                    onClick={() => this.autoCompleteStart()}
                                     disabled={
                                         !this.state.map.isLegal()
                                         || this.state.map.isComplete()
-                                        || this.state.long_op===true
-										|| this.state.bank_systems.systems.length < this.state.map.getTotalOpen()
+                                        || this.state.long_op === true
+                                        || this.state.bank_systems.systems.length < this.state.map.getTotalOpen()
                                     }
                                     className="button is-small is-primary"
                                 >
@@ -1064,7 +1063,7 @@ this.state.include_eronous_systems = false;
                             <p className="control">
                                 <span className="select is-small">
                                     <select id="eval-select" value={this.state.eval_option}
-                                            onChange={(event) => this.handleEvalChange(event.target.value)}>
+                                        onChange={(event) => this.handleEvalChange(event.target.value)}>
                                         {eval_options}
                                     </select>
                                 </span>
@@ -1075,7 +1074,7 @@ this.state.include_eronous_systems = false;
                                     id="dont-move-wormholes"
                                     type="checkbox"
                                     checked={this.state.balance_options.dont_move_wormholes}
-                                    onChange={()=>this.handleBalanceOptionChange("dont_move_wormholes")}
+                                    onChange={() => this.handleBalanceOptionChange("dont_move_wormholes")}
                                 />
                                 <label htmlFor="dont-move-wormholes"> Lock Wormholes</label>
                             </p>
@@ -1084,24 +1083,24 @@ this.state.include_eronous_systems = false;
                                     id="dont-move-anomalies"
                                     type="checkbox"
                                     checked={this.state.balance_options.dont_move_anomalies}
-                                    onChange={()=>this.handleBalanceOptionChange("dont_move_anomalies")}
+                                    onChange={() => this.handleBalanceOptionChange("dont_move_anomalies")}
                                 />
-                                 <label htmlFor="dont-move-anomalies"> Lock Anomalies</label>
+                                <label htmlFor="dont-move-anomalies"> Lock Anomalies</label>
                             </p>
                             <p className="control">
                                 <input
                                     id="dont-move-empty"
                                     type="checkbox"
                                     checked={this.state.balance_options.dont_move_empty}
-                                    onChange={()=>this.handleBalanceOptionChange("dont_move_empty")}
+                                    onChange={() => this.handleBalanceOptionChange("dont_move_empty")}
                                 />
                                 <label htmlFor="dont-move-empty"> Lock Empty Spaces</label>
                             </p>
                             <p className="control">
                                 <button
-                                    onClick={()=>this.improveBalanceStart()}
+                                    onClick={() => this.improveBalanceStart()}
 
-                                    disabled={!this.state.map.isComplete() || this.state.long_op===true}
+                                    disabled={!this.state.map.isComplete() || this.state.long_op === true}
                                     className="button is-small is-primary"
                                 >
                                     Improve Balance
@@ -1116,7 +1115,7 @@ this.state.include_eronous_systems = false;
                             toggleDiscordantStars={() => this.toggleDiscordantStars()}
                             include_expansion_systems={this.state.include_expansion_systems}
                             toggleExpansion={() => this.toggleExpansion()}
-							include_base_systems={this.state.include_base_systems}
+                            include_base_systems={this.state.include_base_systems}
                             toggleBaseSystems={() => this.toggleBaseSystems()}
                             active_system={this.state.selected_bank_system}
                             setActiveSystem={(system) => this.setActiveBankSystem(system)}
@@ -1126,12 +1125,12 @@ this.state.include_eronous_systems = false;
                             onSystemDropped={(event) => this.onSystemDropped(event, null)}
                             eval_variables={this.state.eval_variables}
                         />
-						<div className="stats-container">
-							<p>Blue/Red: {this.state.map.getBlueSystemTotal()}/{this.state.map.getRedSystemTotal()}</p>
-							<p>Resources/Influence: {this.state.map.getTotalResources()}/{this.state.map.getTotalInfluence()}</p>
-							<p>Tech: {this.state.map.getTotalTechSpecialties()}</p>
-							<p>Traits R/G/B: {this.state.map.getPlanetTraitTotals()}</p>
-						</div>
+                        <div className="stats-container">
+                            <p>Blue/Red: {this.state.map.getBlueSystemTotal()}/{this.state.map.getRedSystemTotal()}</p>
+                            <p>Resources/Influence: {this.state.map.getTotalResources()}/{this.state.map.getTotalInfluence()}</p>
+                            <p>Tech: {this.state.map.getTotalTechSpecialties()}</p>
+                            <p>Traits R/G/B: {this.state.map.getPlanetTraitTotals()}</p>
+                        </div>
                     </div>
                     <div className="column map-container">
                         <MapComponent
@@ -1139,12 +1138,12 @@ this.state.include_eronous_systems = false;
                             eval_variables={this.state.eval_variables}
                             system_format={this.state.system_format}
                             system_box={this.system_box}
-                            clickedSpace={(index)=>this.clickedSpace(index)}
+                            clickedSpace={(index) => this.clickedSpace(index)}
                             map_class="map-map"
                             systems_draggable={!this.state.long_op}
-                            onSystemDrag={(event, system)=>this.onSystemDrag(event, system)}
-                            onSystemDragEnd={(event)=>this.onSystemDragEnd(event)}
-                            onSystemDropped={(event, space)=>this.onSystemDropped(event, space)}
+                            onSystemDrag={(event, system) => this.onSystemDrag(event, system)}
+                            onSystemDragEnd={(event) => this.onSystemDragEnd(event)}
+                            onSystemDropped={(event, space) => this.onSystemDropped(event, space)}
                             home_values={this.state.home_values}
                         />
                     </div>

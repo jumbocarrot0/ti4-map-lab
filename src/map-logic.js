@@ -1,6 +1,6 @@
-import {MAP_SPACE_TYPES} from "./map-components";
-import {warp_configs} from "./data/warp_data";
-import {ANOMALIES, PLANET_TRAITS, TECH_SPECIALTIES, WORMHOLES} from "./data/tile_data";
+import { MAP_SPACE_TYPES } from "./map-components";
+import { warp_configs } from "./data/warp_data";
+import { ANOMALIES, PLANET_TRAITS, TECH_SPECIALTIES, WORMHOLES } from "./data/tile_data";
 
 export const PLANET_EVAL_STRATEGIES = {
     "SUM": 1,
@@ -15,60 +15,62 @@ export class Planet {
         this.resources = obj_data.resources;
         this.influence = obj_data.influence;
         this.name = obj_data.name;
+        this.legendary = obj_data.legendary;
+        this.ability = obj_data.ability ? obj_data.ability : "";
     }
 
     evaluate(variables) {
         let v = variables.data;
         let value = v.BASE_PLANET_MOD;
-        let r = this.resources*v.RESOURCES_MULTIPLIER,
-            i = this.influence*v.INFLUENCE_MULTIPLIER;
+        let r = this.resources * v.RESOURCES_MULTIPLIER,
+            i = this.influence * v.INFLUENCE_MULTIPLIER;
         let t = 0;
-        if(this.tech_specialty!==null) {
-            t+=v.TECH_MOD;
-            switch(this.tech_specialty) {
+        if (this.tech_specialty !== null) {
+            t += v.TECH_MOD;
+            switch (this.tech_specialty) {
                 case TECH_SPECIALTIES.WARFARE:
-                    t+=v.TECH_WARFARE_MOD;
+                    t += v.TECH_WARFARE_MOD;
                     break;
                 case TECH_SPECIALTIES.PROPULSION:
-                    t+=v.TECH_PROPULSION_MOD;
+                    t += v.TECH_PROPULSION_MOD;
                     break;
                 case TECH_SPECIALTIES.BIOTIC:
-                    t+=v.TECH_BIOTIC_MOD;
+                    t += v.TECH_BIOTIC_MOD;
                     break;
                 case TECH_SPECIALTIES.CYBERNETIC:
-                    t+=v.TECH_CYBERNETIC_MOD;
+                    t += v.TECH_CYBERNETIC_MOD;
                     break;
                 default:
                     break;
             }
         }
-        switch(v.PLANET_STRATEGY) {
+        switch (v.PLANET_STRATEGY) {
             case PLANET_EVAL_STRATEGIES.GREATEST:
                 let to_add = r;
-                if(i>to_add) to_add = i;
-                if(t>to_add) to_add = t;
+                if (i > to_add) to_add = i;
+                if (t > to_add) to_add = t;
                 value += to_add;
                 break;
             case PLANET_EVAL_STRATEGIES.AVERAGE:
-                value += (r+i+t)/3;
+                value += (r + i + t) / 3;
                 break;
             default:
                 let high_one = r;
-                if(i>high_one) high_one = i;
-                value += high_one+t;
+                if (i > high_one) high_one = i;
+                value += high_one + t;
                 break;
         }
-        if(r>0) value+= v.NONZERO_RESOURCES_MOD;
-        if(i>0) value+= v.NONZERO_INFLUENCE_MOD;
-        switch(this.trait) {
+        if (r > 0) value += v.NONZERO_RESOURCES_MOD;
+        if (i > 0) value += v.NONZERO_INFLUENCE_MOD;
+        switch (this.trait) {
             case PLANET_TRAITS.CULTURAL:
-                value+=v.TRAIT_CULTURAL_MOD;
+                value += v.TRAIT_CULTURAL_MOD;
                 break;
             case PLANET_TRAITS.HAZARDOUS:
-                value+=v.TRAIT_HAZARDOUS_MOD;
+                value += v.TRAIT_HAZARDOUS_MOD;
                 break;
             case PLANET_TRAITS.INDUSTRIAL:
-                value+=v.TRAIT_INDUSTRIAL_MOD;
+                value += v.TRAIT_INDUSTRIAL_MOD;
                 break;
             default:
                 break;
@@ -80,13 +82,13 @@ export class Planet {
 export class PlanetBox {
     constructor(planet_data) {
         this.planets = [];
-        for(let one_planet_data of planet_data) {
+        for (const one_planet_data of planet_data) {
             this.planets.push(new Planet(one_planet_data));
         }
     }
 
     getPlanetByName(name) {
-        for(let one_planet of this.planets) {
+        for (const one_planet of this.planets) {
             if (one_planet.name === name) {
                 return one_planet;
             }
@@ -109,49 +111,49 @@ export class System {
             this.wormhole = obj_data.wormhole
         }
         this.planets = [];
-        for(let planet_name of obj_data.planets) {
-            let plToAdd = planet_box.getPlanetByName(planet_name);
-            if(plToAdd) this.planets.push(plToAdd);
+        for (const planet_name of obj_data.planets) {
+            const plToAdd = planet_box.getPlanetByName(planet_name);
+            if (plToAdd) this.planets.push(plToAdd);
         }
     }
 
     evaluate(variables) {
         let v = variables.data;
-        let value=0;
-        for(let one_planet of this.planets) {
-            value+=one_planet.evaluate(variables);
+        let value = 0;
+        for (const one_planet of this.planets) {
+            value += one_planet.evaluate(variables);
         }
-        if(this.planets.length===1) {
-            value+=v.SINGLE_PLANET_MOD;
-        } else if(this.planets.length===2) {
-            value+=v.MULTI_PLANET_MOD;
-            if(this.planets[0].trait === this.planets[1].trait) {
-                value+=v.MATCHING_PLANETS_MOD;
+        if (this.planets.length === 1) {
+            value += v.SINGLE_PLANET_MOD;
+        } else if (this.planets.length === 2) {
+            value += v.MULTI_PLANET_MOD;
+            if (this.planets[0].trait === this.planets[1].trait) {
+                value += v.MATCHING_PLANETS_MOD;
             } else {
-                value+=v.NONMATCHING_PLANETS_MOD;
+                value += v.NONMATCHING_PLANETS_MOD;
             }
-        } else if(this.planets.length>2) {
-            value+=2*v.MULTI_PLANET_MOD;
-            value+=v.MATCHING_PLANETS_MOD;
+        } else if (this.planets.length > 2) {
+            value += 2 * v.MULTI_PLANET_MOD;
+            value += v.MATCHING_PLANETS_MOD;
         }
-        if(this.isMecatolRexSystem()) {
-            value+=v.MECATOL_REX_SYS_MOD;
+        if (this.isMecatolRexSystem()) {
+            value += v.MECATOL_REX_SYS_MOD;
         }
-        if(this.isLegendary()) {
+        if (this.isLegendary()) {
             let legendary_mod = v.LEGENDARY_PLANET_SYS_MOD || 0;
-            value+=legendary_mod;
+            value += legendary_mod;
         }
         return value;
     }
-	
-	isLegendary() {
+
+    isLegendary() {
         for (let i = 0; i < this.planets.length; i++) {
             if (this.planets[i].legendary) {
                 return true;
             }
         }
         return false;
-	}
+    }
 
     getDistanceModifier(variables = {}) {
         let v = variables.data;
@@ -174,24 +176,24 @@ export class System {
         } else if (this.anomaly.length > 0) {
             this.anomaly.forEach(anomaly => {
                 switch (anomaly) {
-            case ANOMALIES.ASTEROID_FIELD:
+                    case ANOMALIES.ASTEROID_FIELD:
                         if (v.DISTANCE_MOD_ASTEROID_FIELD === false || value === false) value = false;
                         value += v.DISTANCE_MOD_ASTEROID_FIELD;
-                break;
-            case ANOMALIES.GRAVITY_RIFT:
+                        break;
+                    case ANOMALIES.GRAVITY_RIFT:
                         if (v.DISTANCE_MOD_GRAVITY_RIFT === false || value === false) return value = false;
                         value += v.DISTANCE_MOD_GRAVITY_RIFT;
-                break;
-            case ANOMALIES.NEBULA:
+                        break;
+                    case ANOMALIES.NEBULA:
                         if (v.DISTANCE_MOD_NEBULA === false || value === false) return value = false;
                         value += v.DISTANCE_MOD_NEBULA;
-                break;
-            case ANOMALIES.SUPERNOVA:
+                        break;
+                    case ANOMALIES.SUPERNOVA:
                         if (v.DISTANCE_MOD_SUPERNOVA === false || value === false) return value = false;
                         value += v.DISTANCE_MOD_SUPERNOVA;
-                break;
-            default:
-                break;
+                        break;
+                    default:
+                        break;
                 }
             }
             )
@@ -200,7 +202,7 @@ export class System {
     }
 
     isMecatolRexSystem() {
-        for(let planet of this.planets) {
+        for (const planet of this.planets) {
             if (planet.name === "Mecatol Rex") return true;
         }
         return false;
@@ -218,35 +220,35 @@ export class System {
     getStringName() {
         let system = this;
         let name_array = [];
-        for(let planet of system.planets) {
-			let tech = "";
-			switch(planet.tech_specialty) {
-			case TECH_SPECIALTIES.BIOTIC:
-				tech = "/G";
-				break;
-			case TECH_SPECIALTIES.WARFARE:
-				tech = "/R";
-				break;
-			case TECH_SPECIALTIES.CYBERNETIC:
-				tech = "/Y";
-				break;
-			case TECH_SPECIALTIES.PROPULSION:
-				tech = "/B";
-				break;
-			default:
-				break;
-			}
+        for (const planet of system.planets) {
+            let tech = "";
+            switch (planet.tech_specialty) {
+                case TECH_SPECIALTIES.BIOTIC:
+                    tech = "/G";
+                    break;
+                case TECH_SPECIALTIES.WARFARE:
+                    tech = "/R";
+                    break;
+                case TECH_SPECIALTIES.CYBERNETIC:
+                    tech = "/Y";
+                    break;
+                case TECH_SPECIALTIES.PROPULSION:
+                    tech = "/B";
+                    break;
+                default:
+                    break;
+            }
             name_array.push(
-				planet.name+" ("+planet.resources+"/"+planet.influence+tech+")"
-			);
+                planet.name + " (" + planet.resources + "/" + planet.influence + tech + ")"
+            );
         }
         if (system.wormhole.length > 0) {
             system.wormhole.forEach(wormhole => {
                 switch (wormhole) {
-                case WORMHOLES.ALPHA:
+                    case WORMHOLES.ALPHA:
                         name_array.push("(α)");
-                    break;
-                case WORMHOLES.BETA:
+                        break;
+                    case WORMHOLES.BETA:
                         name_array.push("(β)");
                         break;
                     case WORMHOLES.GAMMA:
@@ -269,33 +271,33 @@ export class System {
                         break;
                     case WORMHOLES.KAPPA:
                         name_array.push("(κ)");
-                    break;
-                default: break;
-            }
+                        break;
+                    default: break;
+                }
             })
         }
         if (system.anomaly.length > 0) {
             system.anomaly.forEach(anomaly => {
                 switch (anomaly) {
-                case ANOMALIES.SUPERNOVA:
-                    name_array.push("Supernova");
-                    break;
-                case ANOMALIES.GRAVITY_RIFT:
-                    name_array.push("Gravity Rift");
-                    break;
-                case ANOMALIES.NEBULA:
-                    name_array.push("Nebula");
-                    break;
-                case ANOMALIES.ASTEROID_FIELD:
-                    name_array.push("Asteroid Field");
-                    break;
-                default:
-                    break;
-            }
+                    case ANOMALIES.SUPERNOVA:
+                        name_array.push("Supernova");
+                        break;
+                    case ANOMALIES.GRAVITY_RIFT:
+                        name_array.push("Gravity Rift");
+                        break;
+                    case ANOMALIES.NEBULA:
+                        name_array.push("Nebula");
+                        break;
+                    case ANOMALIES.ASTEROID_FIELD:
+                        name_array.push("Asteroid Field");
+                        break;
+                    default:
+                        break;
+                }
             })
         }
-        if(name_array.length===0) name_array.push("Empty Space");
-        return system.id+": "+name_array.join(", ");
+        if (name_array.length === 0) name_array.push("Empty Space");
+        return system.id + ": " + name_array.join(", ");
     }
 }
 
@@ -303,15 +305,15 @@ export class SystemBox {
     constructor(system_data, planet_box) {
         this.systems = [];
         this.planet_box = planet_box;
-        for(let one_system_data of system_data) {
+        for (const one_system_data of system_data) {
             this.systems.push(new System(one_system_data, planet_box));
         }
     }
 
     getBlueSystemTotal() {
         let total = 0;
-        for(let system of this.systems) {
-            if(system.isBlue()) {
+        for (const system of this.systems) {
+            if (system.isBlue()) {
                 total++;
             }
         }
@@ -320,8 +322,8 @@ export class SystemBox {
 
     getRedSystemTotal() {
         let total = 0;
-        for(let system of this.systems) {
-            if(system.isRed()) {
+        for (const system of this.systems) {
+            if (system.isRed()) {
                 total++;
             }
         }
@@ -329,22 +331,22 @@ export class SystemBox {
     }
 
     getSystemIndexByID(id) {
-        for(let [index, system] of this.systems.entries()) {
-            if(system.id === id) return index;
+        for (const [index, system] of this.systems.entries()) {
+            if (system.id === id) return index;
         }
         return null;
     }
 
-    getSystemByID(id, splice=false) {
+    getSystemByID(id, splice = false) {
         let sysindex = this.getSystemIndexByID(id);
-        if (sysindex!==null && splice) return this.systems.splice(sysindex, 1);
-        if (sysindex!==null) return this.systems[sysindex];
+        if (sysindex !== null && splice) return this.systems.splice(sysindex, 1);
+        if (sysindex !== null) return this.systems[sysindex];
         return null;
     }
 
     makeCopy() {
         let new_system_box = new SystemBox([], this.planet_box);
-        for(let one_system of this.systems) {
+        for (const one_system of this.systems) {
             new_system_box.systems.push(one_system);
         }
         return new_system_box;
@@ -372,16 +374,16 @@ export class SystemBox {
 export function getDistanceMultiplier(modded_distance, variables) {
     let v = variables.data;
     let d = modded_distance;
-    if(d<0) d = 0;
-    if(d>10) d = 10;
+    if (d < 0) d = 0;
+    if (d > 10) d = 10;
     return v.DISTANCE_MULTIPLIER[d];
 }
 
 export class Map {
-    constructor(load_default=true, starting_space=null, iterations=3) {
-        if(load_default) {
+    constructor(load_default = true, starting_space = null, iterations = 3) {
+        if (load_default) {
             this.spaces = [starting_space];
-            for(let i=0; i<iterations; i++) {
+            for (let i = 0; i < iterations; i++) {
                 this.addAdjacentSpaces();
             }
         } else {
@@ -391,7 +393,7 @@ export class Map {
 
     makeCopy() {
         let new_map = new Map(false);
-        for(let one_space of this.spaces) {
+        for (const one_space of this.spaces) {
             let new_space = new MapSpace(
                 one_space.x,
                 one_space.y,
@@ -410,105 +412,105 @@ export class Map {
     }
 
     getSpaceBySystemID(id) {
-        for(let one_space of this.spaces) {
-            if(
-                one_space.system!==null
-                && one_space.system.id===id
+        for (const one_space of this.spaces) {
+            if (
+                one_space.system
+                && one_space.system.id === id
             ) return one_space;
         }
         return null;
     }
-	
-	findSpaceDistance(space_a, space_b, max=5) {
-		let checked_spaces = [space_a];
-		let new_to_check_adj = [space_a];
-		for(let i=0; i<=max; i++) {
-			if(areCoordsInList(space_b, checked_spaces)) {
-				return i;
-			}
-			let new_new_check = [];
-			for(let one_space of new_to_check_adj) {
-				let new_adj = this.getAdjacentSpacesIncludingWormholes(one_space);
-				for(let one_adj of new_adj) {
-					if(!areCoordsInList(one_adj, checked_spaces)) {
-						checked_spaces.push(one_adj);
-						new_new_check.push(one_adj);
-					}
-				}
-			}
-			new_to_check_adj = new_new_check;
-		}
-		return max+1;
-	}
-	
-	getHomeSystemStats() {
-		let stats = [];
-		let nonhomes = [];
-		for(let space of this.spaces) {
-			if(space.type===MAP_SPACE_TYPES.HOME) {
-				stats.push({home: space, slice: []});
-			} else if(space.type===MAP_SPACE_TYPES.SYSTEM && space.system.planets.length>0) {
-				nonhomes.push(space)
-			}
-		}
-		for(let space of nonhomes) {
-			let best = 50;
-			let winner = null;
-			for(let i=0;i<stats.length;i++) {
-				let dis = this.findSpaceDistance(stats[i].home, space);
-				if(dis < best) {
-					best = dis;
-					winner = i;
-				} else if(dis===best) {
-					winner = null;
-				}
-			}
-			if(winner !== null) {
-				stats[winner].slice.push(space);
-			}
-		}
-		let final_stats = [];
-		for(let one_stat of stats) {
-			let resources = 0;
-			let influence = 0;
-			let techs = "";
-			for(let one_system of one_stat.slice) {
-				for(let one_planet of one_system.system.planets) {
-					resources += one_planet.resources;
-					influence += one_planet.influence;
-					switch(one_planet.tech_specialty) {
-		                case TECH_SPECIALTIES.WARFARE:
-		                    techs += "R";
-		                    break;
-		                case TECH_SPECIALTIES.PROPULSION:
-		                    techs += "B";
-		                    break;
-		                case TECH_SPECIALTIES.BIOTIC:
-		                    techs += "G";
-		                    break;
-		                case TECH_SPECIALTIES.CYBERNETIC:
-		                    techs += "Y";
-		                    break;
-						default:
-							break;
-					}
-				}
-			}
-			techs = techs.split("").sort().join("");
-			final_stats.push({
-				x: one_stat.home.x, 
-				y: one_stat.home.y,
-				z: one_stat.home.z,
-				stats: resources+"/"+influence+" "+techs,
-			});
-		}
-		return final_stats;
-	}
+
+    findSpaceDistance(space_a, space_b, max = 5) {
+        let checked_spaces = [space_a];
+        let new_to_check_adj = [space_a];
+        for (let i = 0; i <= max; i++) {
+            if (areCoordsInList(space_b, checked_spaces)) {
+                return i;
+            }
+            let new_new_check = [];
+            for (const one_space of new_to_check_adj) {
+                let new_adj = this.getAdjacentSpacesIncludingWormholes(one_space);
+                for (const one_adj of new_adj) {
+                    if (!areCoordsInList(one_adj, checked_spaces)) {
+                        checked_spaces.push(one_adj);
+                        new_new_check.push(one_adj);
+                    }
+                }
+            }
+            new_to_check_adj = new_new_check;
+        }
+        return max + 1;
+    }
+
+    getHomeSystemStats() {
+        let stats = [];
+        let nonhomes = [];
+        for (const space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.HOME) {
+                stats.push({ home: space, slice: [] });
+            } else if (space.type === MAP_SPACE_TYPES.SYSTEM && space.system.planets.length > 0) {
+                nonhomes.push(space)
+            }
+        }
+        for (const space of nonhomes) {
+            let best = 50;
+            let winner = null;
+            for (let i = 0; i < stats.length; i++) {
+                let dis = this.findSpaceDistance(stats[i].home, space);
+                if (dis < best) {
+                    best = dis;
+                    winner = i;
+                } else if (dis === best) {
+                    winner = null;
+                }
+            }
+            if (winner !== null) {
+                stats[winner].slice.push(space);
+            }
+        }
+        let final_stats = [];
+        for (const one_stat of stats) {
+            let resources = 0;
+            let influence = 0;
+            let techs = "";
+            for (const one_system of one_stat.slice) {
+                for (const one_planet of one_system.system.planets) {
+                    resources += one_planet.resources;
+                    influence += one_planet.influence;
+                    switch (one_planet.tech_specialty) {
+                        case TECH_SPECIALTIES.WARFARE:
+                            techs += "R";
+                            break;
+                        case TECH_SPECIALTIES.PROPULSION:
+                            techs += "B";
+                            break;
+                        case TECH_SPECIALTIES.BIOTIC:
+                            techs += "G";
+                            break;
+                        case TECH_SPECIALTIES.CYBERNETIC:
+                            techs += "Y";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            techs = techs.split("").sort().join("");
+            final_stats.push({
+                x: one_stat.home.x,
+                y: one_stat.home.y,
+                z: one_stat.home.z,
+                stats: resources + "/" + influence + " " + techs,
+            });
+        }
+        return final_stats;
+    }
 
     getOpenSpacesTotal() {
         let total = 0;
-        for(let space of this.spaces) {
-            if(space.type===MAP_SPACE_TYPES.OPEN) {
+        for (const space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.OPEN) {
                 total++;
             }
         }
@@ -517,8 +519,8 @@ export class Map {
 
     getBlueSystemTotal() {
         let total = 0;
-        for(let space of this.spaces) {
-            if(space.type===MAP_SPACE_TYPES.SYSTEM && space.system.isBlue()) {
+        for (const space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.SYSTEM && space.system.isBlue()) {
                 total++;
             }
         }
@@ -527,95 +529,107 @@ export class Map {
 
     getRedSystemTotal() {
         let total = 0;
-        for(let space of this.spaces) {
-            if(space.type===MAP_SPACE_TYPES.SYSTEM && space.system.isRed()) {
+        for (const space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.SYSTEM && space.system.isRed()) {
                 total++;
             }
         }
         return total;
     }
-	
-	getTotalResources() {
-		let total = 0;
-		for(let space of this.spaces) {
-			if(space.type===MAP_SPACE_TYPES.SYSTEM) {
-				for(let planet of space.system.planets) {
-					total += planet.resources;
-				}
-			}
-		}
-		return total;
-	}
-	getTotalInfluence() {
-		let total = 0;
-		for(let space of this.spaces) {
-			if(space.type===MAP_SPACE_TYPES.SYSTEM) {
-				for(let planet of space.system.planets) {
-					total += planet.influence;
-				}
-			}
-		}
-		return total;
-	}
-	getTotalTechSpecialties() {
-		let total = "";
-		for(let space of this.spaces) {
-			if(space.type===MAP_SPACE_TYPES.SYSTEM) {
-				for(let planet of space.system.planets) {
-					switch(planet.tech_specialty) {
-		                case TECH_SPECIALTIES.WARFARE:
-		                    total += "R";
-		                    break;
-		                case TECH_SPECIALTIES.PROPULSION:
-		                    total += "B";
-		                    break;
-		                case TECH_SPECIALTIES.BIOTIC:
-		                    total += "G";
-		                    break;
-		                case TECH_SPECIALTIES.CYBERNETIC:
-		                    total += "Y";
-		                    break;
-						default:
-							break;
-					}
-				}
-			}
-		}
-		return total.split('').sort().join('');
-	}
-	
-	getPlanetTraitTotals() {
-		let ind = 0;
-		let cul = 0;
-		let haz = 0;
-		for(let space of this.spaces) {
-			if(space.type===MAP_SPACE_TYPES.SYSTEM) {
-				for(let planet of space.system.planets) {
-					switch(planet.trait) {
-					case PLANET_TRAITS.HAZARDOUS:
-						haz++;
-						break;
-					case PLANET_TRAITS.CULTURAL:
-						cul++;
-						break;
-					case PLANET_TRAITS.INDUSTRIAL:
-						ind++;
-						break;
-					default:
-						break;
-					}
-				}
-			}
-		}
-		return haz+"/"+ind+"/"+cul;
-	}
+
+    getLegendariesTotal() {
+        let total = 0;
+        for (const space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.SYSTEM) {
+                for (const planet of space.system.planets) {
+                    if (planet.legendary) total++
+                }
+            }
+        }
+        return total;
+    }
+
+    getTotalResources() {
+        let total = 0;
+        for (const space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.SYSTEM) {
+                for (const planet of space.system.planets) {
+                    total += planet.resources;
+                }
+            }
+        }
+        return total;
+    }
+    getTotalInfluence() {
+        let total = 0;
+        for (const space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.SYSTEM) {
+                for (let planet of space.system.planets) {
+                    total += planet.influence;
+                }
+            }
+        }
+        return total;
+    }
+    getTotalTechSpecialties() {
+        let total = "";
+        for (let space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.SYSTEM) {
+                for (let planet of space.system.planets) {
+                    switch (planet.tech_specialty) {
+                        case TECH_SPECIALTIES.WARFARE:
+                            total += "R";
+                            break;
+                        case TECH_SPECIALTIES.PROPULSION:
+                            total += "B";
+                            break;
+                        case TECH_SPECIALTIES.BIOTIC:
+                            total += "G";
+                            break;
+                        case TECH_SPECIALTIES.CYBERNETIC:
+                            total += "Y";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        return total.split('').sort().join('');
+    }
+
+    getPlanetTraitTotals() {
+        let ind = 0;
+        let cul = 0;
+        let haz = 0;
+        for (let space of this.spaces) {
+            if (space.type === MAP_SPACE_TYPES.SYSTEM) {
+                for (const planet of space.system.planets) {
+                    switch (planet.trait) {
+                        case PLANET_TRAITS.HAZARDOUS:
+                            haz++;
+                            break;
+                        case PLANET_TRAITS.CULTURAL:
+                            cul++;
+                            break;
+                        case PLANET_TRAITS.INDUSTRIAL:
+                            ind++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        return haz + "/" + ind + "/" + cul;
+    }
 
     getPossibleSystemTotal() {
         let total = 0;
-        for(let space of this.spaces) {
-            if(
-                space.type===MAP_SPACE_TYPES.SYSTEM
-                || space.type===MAP_SPACE_TYPES.OPEN
+        for (const space of this.spaces) {
+            if (
+                space.type === MAP_SPACE_TYPES.SYSTEM
+                || space.type === MAP_SPACE_TYPES.OPEN
             ) {
                 total++;
             }
@@ -623,12 +637,12 @@ export class Map {
         return total;
     }
 
-   areWarpsLogical() {
-        for(let space of this.spaces) {
+    areWarpsLogical() {
+        for (const space of this.spaces) {
             if (space.type === MAP_SPACE_TYPES.WARP) {
-                for(let one_warp of warp_configs[space.warp_spaces]) {
-                    for(let one_warp_dir of one_warp) {
-                        if(!this.doesWarpDirectionConnect(one_warp_dir, space, [space])) {
+                for (const one_warp of warp_configs[space.warp_spaces]) {
+                    for (const one_warp_dir of one_warp) {
+                        if (!this.doesWarpDirectionConnect(one_warp_dir, space, [space])) {
                             return false;
                         }
                     }
@@ -641,27 +655,27 @@ export class Map {
     doesWarpDirectionConnect(warp_direction, space, checked_spaces) {
         let whereItGoes = space.getWarpDirectionCoordinates(warp_direction);
         let spaceItGoes = getObjFromCoord(whereItGoes, this.spaces);
-        if(!spaceItGoes) return false;
-        if(areCoordsInList(spaceItGoes, checked_spaces)) return false;
-        if(spaceItGoes.type === MAP_SPACE_TYPES.CLOSED) return false;
-        if(spaceItGoes.type === MAP_SPACE_TYPES.WARP) {
+        if (!spaceItGoes) return false;
+        if (areCoordsInList(spaceItGoes, checked_spaces)) return false;
+        if (spaceItGoes.type === MAP_SPACE_TYPES.CLOSED) return false;
+        if (spaceItGoes.type === MAP_SPACE_TYPES.WARP) {
             let oppositeDirection = {
-                "x": warp_direction.x*-1,
-                "y": warp_direction.y*-1,
-                "z": warp_direction.z*-1,
+                "x": warp_direction.x * -1,
+                "y": warp_direction.y * -1,
+                "z": warp_direction.z * -1,
             };
             let directions_to_check = [];
-            for(let one_next_warp of warp_configs[spaceItGoes.warp_spaces]) {
-                if(areCoordsInList(oppositeDirection, [one_next_warp[0]])) {
+            for (const one_next_warp of warp_configs[spaceItGoes.warp_spaces]) {
+                if (areCoordsInList(oppositeDirection, [one_next_warp[0]])) {
                     directions_to_check.push(one_next_warp[1]);
-                } else if(areCoordsInList(oppositeDirection, [one_next_warp[1]])) {
+                } else if (areCoordsInList(oppositeDirection, [one_next_warp[1]])) {
                     directions_to_check.push(one_next_warp[0]);
                 }
             }
-            if(directions_to_check.length === 0) return false;
+            if (directions_to_check.length === 0) return false;
             checked_spaces.push(spaceItGoes);
-            for(let one_direction of directions_to_check) {
-                if(!this.doesWarpDirectionConnect(one_direction, spaceItGoes, checked_spaces)) {
+            for (const one_direction of directions_to_check) {
+                if (!this.doesWarpDirectionConnect(one_direction, spaceItGoes, checked_spaces)) {
                     return false;
                 }
             }
@@ -670,17 +684,17 @@ export class Map {
     }
 
     isComplete() {
-        for(let map_space of this.spaces) {
-            if(map_space.type===MAP_SPACE_TYPES.OPEN) {
+        for (const map_space of this.spaces) {
+            if (map_space.type === MAP_SPACE_TYPES.OPEN) {
                 return false;
             }
         }
         return true;
     }
-	
-	getTotalOpen() {
-		return this.spaces.filter(space=>space.type===MAP_SPACE_TYPES.OPEN).length
-	}
+
+    getTotalOpen() {
+        return this.spaces.filter(space => space.type === MAP_SPACE_TYPES.OPEN).length
+    }
 
     isLegal() {
         let is_legal = true;
@@ -713,23 +727,23 @@ export class Map {
     getHomeValue(space, variables) {
         let home_total = 0;
         let spaces_to_get_to = [];
-        for(let one_space of this.spaces) {
-            if(
-                one_space.type===MAP_SPACE_TYPES.SYSTEM &&
+        for (const one_space of this.spaces) {
+            if (
+                one_space.type === MAP_SPACE_TYPES.SYSTEM &&
                 one_space.system.evaluate(variables) > 0 &&
-				getCoordsDistance(space, one_space) < 5
+                getCoordsDistance(space, one_space) < 5
             ) {
                 spaces_to_get_to.push(one_space);
             }
         }
-        for(let one_space of spaces_to_get_to) {
+        for (const one_space of spaces_to_get_to) {
             let shortest_distance = this._getShortestModdedDistance(
                 space, one_space, variables
             );
-            if(!(shortest_distance===null)) {
-                home_total+=getDistanceMultiplier(
+            if (!(shortest_distance === null)) {
+                home_total += getDistanceMultiplier(
                     shortest_distance, variables
-                )*one_space.system.evaluate(variables);
+                ) * one_space.system.evaluate(variables);
             }
         }
         return home_total;
@@ -740,37 +754,37 @@ export class Map {
         let act_paths = [];
 
         let first_steps = this.getAdjacentSystemsIncludingWormholes(start_space);
-        for(let one_step of first_steps) {
-            if(
-                one_step.system.getDistanceModifier(variables)!==false
-                && this.getMapDistanceModifier(start_space, dest_space, variables)!==false
+        for (const one_step of first_steps) {
+            if (
+                one_step.system.getDistanceModifier(variables) !== false
+                && this.getMapDistanceModifier(start_space, dest_space, variables) !== false
             ) {
                 let new_path = [one_step.system.id];
-                if(one_step.system.id===dest_space.system.id) {
+                if (one_step.system.id === dest_space.system.id) {
                     finished_paths.push(new_path);
                 } else {
                     act_paths.push(new_path);
                 }
             }
         }
-        while(act_paths.length>0) {
+        while (act_paths.length > 0) {
             let new_active_paths = [];
-            for(let one_path of act_paths) {
+            for (const one_path of act_paths) {
                 let results = this._extendPath(start_space, dest_space, one_path, variables);
-                for(let one_done of results.finished) {
+                for (const one_done of results.finished) {
                     finished_paths.push(one_done);
                 }
-                for(let one_ongoing of results.ongoing) {
+                for (const one_ongoing of results.ongoing) {
                     new_active_paths.push(one_ongoing);
                 }
             }
-            act_paths=new_active_paths;
+            act_paths = new_active_paths;
         }
         let first_yet = false;
         let shortest = null;
-        for(let one_path of finished_paths) {
+        for (const one_path of finished_paths) {
             let path_length = this._calculateModdedDistanceFromRaw(one_path, variables, start_space);
-            if(!first_yet || path_length<shortest) {
+            if (!first_yet || path_length < shortest) {
                 shortest = path_length;
                 first_yet = true;
             }
@@ -781,23 +795,23 @@ export class Map {
     _extendPath(start_space, dest_space, path, variables) {
         let completed_paths = [];
         let ongoing_paths = [];
-        let last_step = this.getSpaceBySystemID(path[path.length-1]);
+        let last_step = this.getSpaceBySystemID(path[path.length - 1]);
         let next_steps = this.getAdjacentSystemsIncludingWormholes(last_step);
-        for(let one_step of next_steps) {
-            if(one_step.system.id===dest_space.system.id) {
+        for (const one_step of next_steps) {
+            if (one_step.system.id === dest_space.system.id) {
                 let path_copy = [...path, one_step.system.id];
                 completed_paths.push(path_copy);
             } else if (
                 !(one_step.system.id in path)
-                && one_step.system.getDistanceModifier(variables)!==false
-                && this.getMapDistanceModifier(start_space, dest_space, variables)!==false
-                && path.length<4
+                && one_step.system.getDistanceModifier(variables) !== false
+                && this.getMapDistanceModifier(start_space, dest_space, variables) !== false
+                && path.length < 4
             ) {
                 let path_copy = [...path, one_step.system.id];
                 ongoing_paths.push(path_copy);
             }
         }
-        return({
+        return ({
             "finished": completed_paths,
             "ongoing": ongoing_paths,
         });
@@ -806,20 +820,20 @@ export class Map {
 
     _calculateModdedDistanceFromRaw(path, variables, start_space) {
         let modded_dist = 0;
-        for(let one_index of path) {
+        for (const one_index of path) {
             let one_sys = this.getSpaceBySystemID(one_index);
-            modded_dist+=
+            modded_dist +=
                 one_sys.system.getDistanceModifier(variables)
-                +this.getMapDistanceModifier(start_space, one_sys, variables);
+                + this.getMapDistanceModifier(start_space, one_sys, variables);
         }
         return modded_dist;
     }
 
     getMapDistanceModifier(start_space, dest_space, variables) {
         let adj_spaces = this.getAdjacentSpacesIncludingWormholes(dest_space);
-        for(let one_space of adj_spaces) {
-            if(
-                one_space.type===MAP_SPACE_TYPES.HOME &&
+        for (const one_space of adj_spaces) {
+            if (
+                one_space.type === MAP_SPACE_TYPES.HOME &&
                 !areCoordsInList(start_space, [one_space]
                 )
             ) {
@@ -833,10 +847,10 @@ export class Map {
 
     addAdjacentSpaces() {
         let coords_to_add = [];
-        for(let map_space of this.spaces) {
+        for (const map_space of this.spaces) {
             let adjacent_coords = map_space.getAdjacentCoordinates();
-            for(let one_adjacent_coords of adjacent_coords) {
-                if(
+            for (const one_adjacent_coords of adjacent_coords) {
+                if (
                     !areCoordsInList(one_adjacent_coords, coords_to_add) &&
                     !areCoordsInList(one_adjacent_coords, this.spaces)
                 ) {
@@ -844,7 +858,7 @@ export class Map {
                 }
             }
         }
-        for(let one_coords_to_add of coords_to_add) {
+        for (const one_coords_to_add of coords_to_add) {
             this.spaces.push(new MapSpace(
                 one_coords_to_add.x,
                 one_coords_to_add.y,
@@ -861,27 +875,27 @@ export class Map {
             "z": system_space.z - warp_space.z,
         };
         let warps_to_follow = [];
-        for(let one_warp of warp_configs[warp_space.warp_spaces]) {
-            if(areCoordsInList(direction_from, one_warp)) {
+        for (const one_warp of warp_configs[warp_space.warp_spaces]) {
+            if (areCoordsInList(direction_from, one_warp)) {
                 warps_to_follow.push(one_warp);
             }
         }
-        for(let one_warp of warps_to_follow) {
-            for(let one_warp_direction of one_warp) {
-                if(!areCoordsInList(one_warp_direction, [direction_from])) {
+        for (const one_warp of warps_to_follow) {
+            for (const one_warp_direction of one_warp) {
+                if (!areCoordsInList(one_warp_direction, [direction_from])) {
                     let next_space = getObjFromCoord(
                         warp_space.getWarpDirectionCoordinates(one_warp_direction),
                         this.spaces
                     );
-                    if(next_space!==null) {
-                        if(next_space.type!==MAP_SPACE_TYPES.WARP) {
+                    if (next_space !== null) {
+                        if (next_space.type !== MAP_SPACE_TYPES.WARP) {
                             if (!areCoordsInList(next_space, adj_systems)) {
                                 adj_systems.push(next_space);
                             }
                         } else {
                             let farther_systems = this._getAdjacentSpacesThroughWarps(warp_space, next_space);
-                            for(let one_far_sys of farther_systems) {
-                                if(!areCoordsInList(one_far_sys, adj_systems)) {
+                            for (const one_far_sys of farther_systems) {
+                                if (!areCoordsInList(one_far_sys, adj_systems)) {
                                     adj_systems.push(one_far_sys);
                                 }
                             }
@@ -896,8 +910,8 @@ export class Map {
     getAdjacentSystems(space) {
         let adj_spaces = this.getAdjacentSpaces(space);
         let adj_systems = [];
-        for(let one_space of adj_spaces) {
-            if(one_space.type===MAP_SPACE_TYPES.SYSTEM){
+        for (const one_space of adj_spaces) {
+            if (one_space.type === MAP_SPACE_TYPES.SYSTEM) {
                 adj_systems.push(one_space);
             }
         }
@@ -907,17 +921,17 @@ export class Map {
     getAdjacentSpaces(space) {
         let adj_coords = space.getAdjacentCoordinates();
         let adj_systems = [];
-        for(let one_coord of adj_coords) {
+        for (const one_coord of adj_coords) {
             let potential_space = getObjFromCoord(one_coord, this.spaces);
-            if(potential_space !== null) {
-                if(potential_space.type!==MAP_SPACE_TYPES.WARP){
-                    if(!areCoordsInList(potential_space, adj_systems)) {
+            if (potential_space !== null) {
+                if (potential_space.type !== MAP_SPACE_TYPES.WARP) {
+                    if (!areCoordsInList(potential_space, adj_systems)) {
                         adj_systems.push(potential_space);
                     }
                 } else {
                     let potential_systems = this._getAdjacentSpacesThroughWarps(space, potential_space);
-                    for(let one_system_space of potential_systems) {
-                        if(!areCoordsInList(one_system_space, adj_systems)) {
+                    for (const one_system_space of potential_systems) {
+                        if (!areCoordsInList(one_system_space, adj_systems)) {
                             adj_systems.push(one_system_space);
                         }
                     }
@@ -930,8 +944,8 @@ export class Map {
     getAdjacentSystemsIncludingWormholes(space) {
         let adj_spaces = this.getAdjacentSpacesIncludingWormholes(space);
         let adj_systems = [];
-        for(let one_space of adj_spaces) {
-            if(one_space.type===MAP_SPACE_TYPES.SYSTEM) {
+        for (const one_space of adj_spaces) {
+            if (one_space.type === MAP_SPACE_TYPES.SYSTEM) {
                 adj_systems.push(one_space);
             }
         }
@@ -941,8 +955,8 @@ export class Map {
     getAdjacentSpacesIncludingWormholes(space) {
         let adj_systems = this.getAdjacentSpaces(space);
         let wh_systems = this.getMatchingWormholeSpaces(space);
-        for(let one_whs of wh_systems) {
-            if(!areCoordsInList(one_whs, adj_systems)) {
+        for (const one_whs of wh_systems) {
+            if (!areCoordsInList(one_whs, adj_systems)) {
                 adj_systems.push(one_whs);
             }
         }
@@ -968,11 +982,31 @@ export class Map {
         return matching_spaces;
     }
 
+    getWormholeSpaces(type = null) {
+        let spaces_to_return = [];
+        for (const one_space of this.spaces) {
+            if (
+                one_space.type === MAP_SPACE_TYPES.SYSTEM
+                &&
+                one_space.system.wormhole.length > 0
+                &&
+                (
+                    type === null
+                    ||
+                    one_space.system.wormhole.includes(type)
+                )
+            ) {
+                spaces_to_return.push(one_space);
+            }
+        }
+        return spaces_to_return;
+    }
+
 }
 
 export function getObjFromCoord(coords, list) {
-        for(let existing_coords of list) {
-        if(
+    for (const existing_coords of list) {
+        if (
             coords.x === existing_coords.x &&
             coords.y === existing_coords.y &&
             coords.z === existing_coords.z
@@ -984,22 +1018,22 @@ export function getObjFromCoord(coords, list) {
 }
 
 export function getCoordsDistance(coords1, coords2) {
-	return Math.max(
-		Math.abs(coords1.x-coords2.x),
-		Math.abs(coords1.y-coords2.y),
-		Math.abs(coords1.z-coords2.z),
-	)
+    return Math.max(
+        Math.abs(coords1.x - coords2.x),
+        Math.abs(coords1.y - coords2.y),
+        Math.abs(coords1.z - coords2.z),
+    )
 }
 
 export function areCoordsInList(coords, list) {
-    if(getObjFromCoord(coords, list)) {
+    if (getObjFromCoord(coords, list)) {
         return true;
     }
     return false;
 }
 
 export class MapSpace {
-    constructor(x, y, z, warp_spaces=null, type=MAP_SPACE_TYPES.OPEN, system=null) {
+    constructor(x, y, z, warp_spaces = null, type = MAP_SPACE_TYPES.OPEN, system = null) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -1010,20 +1044,20 @@ export class MapSpace {
 
     getAdjacentCoordinates() {
         return [
-            {"x":this.x+1,"y":this.y-1,"z":this.z},
-            {"x":this.x+1,"y":this.y,"z":this.z-1},
-            {"x":this.x-1,"y":this.y+1,"z":this.z},
-            {"x":this.x,"y":this.y+1,"z":this.z-1},
-            {"x":this.x-1,"y":this.y,"z":this.z+1},
-            {"x":this.x,"y":this.y-1,"z":this.z+1},
-        ];        
+            { "x": this.x + 1, "y": this.y - 1, "z": this.z },
+            { "x": this.x + 1, "y": this.y, "z": this.z - 1 },
+            { "x": this.x - 1, "y": this.y + 1, "z": this.z },
+            { "x": this.x, "y": this.y + 1, "z": this.z - 1 },
+            { "x": this.x - 1, "y": this.y, "z": this.z + 1 },
+            { "x": this.x, "y": this.y - 1, "z": this.z + 1 },
+        ];
     }
 
     getWarpDirectionCoordinates(warp_direction) {
         return {
-            "x": this.x+warp_direction.x,
-            "y": this.y+warp_direction.y,
-            "z": this.z+warp_direction.z,
+            "x": this.x + warp_direction.x,
+            "y": this.y + warp_direction.y,
+            "z": this.z + warp_direction.z,
         }
     }
 }
