@@ -505,26 +505,26 @@ export class SystemComponent extends React.Component {
             for (let i = 0; i < system.wormhole.length && system.anomaly.length; i++){
                 switch(system.wormhole[i]) {
                 case WORMHOLES.ALPHA:
-                    extras.push(<div className="wormhole alpha" key="alpha_wh">a</div>);
+                        extras.push(<div title="Alpha Wormhole" className="wormhole alpha" key="alpha_wh">α</div>);
                     break;
                 case WORMHOLES.BETA:
-                    extras.push(<div className="wormhole beta" key="alpha_wh">b</div>);
+                        extras.push(<div title="Beta Wormhole" className="wormhole beta" key="alpha_wh">β</div>);
                     break;
                 default: break;
             }
                 switch(system.anomaly[i]) {
                 case ANOMALIES.SUPERNOVA:
-                    extras.push(<div className="supernova" key="supernova"></div>);
+                        extras.push(<div title="Supernova" className="supernova" key="supernova"></div>);
                     break;
                 case ANOMALIES.GRAVITY_RIFT:
-                    extras.push(<div className="gravity-rift" key="gravity-rift"></div>);
+                        extras.push(<div title="Gravity Rift" className="gravity-rift" key="gravity-rift"></div>);
                     break;
                 case ANOMALIES.NEBULA:
-                    extras.push(<div className="nebula" key="nebula"></div>);
+                        extras.push(<div title="Nebula" className="nebula" key="nebula"></div>);
                     break;
                 case ANOMALIES.ASTEROID_FIELD:
                     extras.push(
-                        <div className="asteroid-field" key="asteroid-field">
+                            <div title="Asteroid Field" className="asteroid-field" key="asteroid-field">
                             <div className="asteroid a"></div>
                             <div className="asteroid b"></div>
                             <div className="asteroid c"></div>
@@ -763,7 +763,7 @@ export class PlanetComponent extends React.Component {
             )
         }
         return (
-            <div className={"planet "+trait_class+" "+tech_class+legendary_class}>
+            <div title={`${planet.name}\n${trait_class}\n${tech_class}\n${planet.ability}`} className={"planet "+trait_class+" "+tech_class+legendary_class}>
                 {values}
                 {name_stuff}
             </div>
