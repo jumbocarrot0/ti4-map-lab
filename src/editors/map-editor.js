@@ -769,17 +769,31 @@ this.state.include_eronous_systems = false;
         return options;
     }
 
+    toggleEronous() {
+        this.setState({
+            include_eronous_systems: !this.state.include_eronous_systems,
+            bank_systems: this.syncBankSystems(this.state.map, { include_eronous_systems: !this.state.include_eronous_systems }),
+        });
+    }
+
+    toggleDiscordantStars() {
+        this.setState({
+            include_discordant_stars_systems: !this.state.include_discordant_stars_systems,
+            bank_systems: this.syncBankSystems(this.state.map, { include_discordant_stars_systems: !this.state.include_discordant_stars_systems }),
+        });
+    }
+
     toggleExpansion() {
         this.setState({
             include_expansion_systems: !this.state.include_expansion_systems,
-            bank_systems: this.syncBankSystems(this.state.map, !this.state.include_expansion_systems, this.state.include_base_systems),
+            bank_systems: this.syncBankSystems(this.state.map, { include_expansion_systems: !this.state.include_expansion_systems }),
         });
     }
 	
     toggleBaseSystems() {
         this.setState({
             include_base_systems: !this.state.include_base_systems,
-            bank_systems: this.syncBankSystems(this.state.map, this.state.include_expansion_systems, !this.state.include_base_systems),
+            bank_systems: this.syncBankSystems(this.state.map, { include_base_systems: !this.state.include_base_systems }),
         });
     }
 
@@ -1096,16 +1110,20 @@ this.state.include_eronous_systems = false;
                         </div>
                         <SystemBankComponent
                             systems={this.state.bank_systems}
+                            include_eronous_systems={this.state.include_eronous_systems}
+                            toggleEronous={() => this.toggleEronous()}
+                            include_discordant_stars_systems={this.state.include_discordant_stars_systems}
+                            toggleDiscordantStars={() => this.toggleDiscordantStars()}
                             include_expansion_systems={this.state.include_expansion_systems}
-                            toggleExpansion={()=>this.toggleExpansion()}
+                            toggleExpansion={() => this.toggleExpansion()}
 							include_base_systems={this.state.include_base_systems}
-							toggleBaseSystems={()=>this.toggleBaseSystems()}
+                            toggleBaseSystems={() => this.toggleBaseSystems()}
                             active_system={this.state.selected_bank_system}
-                            setActiveSystem={(system)=>this.setActiveBankSystem(system)}
+                            setActiveSystem={(system) => this.setActiveBankSystem(system)}
                             system_format={this.state.system_format}
-                            onSelectedSystemDrag={(event)=>this.onSelectedSystemDrag(event)}
-                            onSystemDragEnd={(event)=>this.onSystemDragEnd(event)}
-                            onSystemDropped={(event)=>this.onSystemDropped(event,null)}
+                            onSelectedSystemDrag={(event) => this.onSelectedSystemDrag(event)}
+                            onSystemDragEnd={(event) => this.onSystemDragEnd(event)}
+                            onSystemDropped={(event) => this.onSystemDropped(event, null)}
                             eval_variables={this.state.eval_variables}
                         />
 						<div className="stats-container">
