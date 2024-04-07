@@ -267,7 +267,7 @@ h1 {padding:1rem;}
       @include lg-up {
         font-size: $lgPlanetSize/4;
         line-height: $lgPlanetSize/4-2;
-        bottom:-9px;
+        bottom:-15px;
       }
       position:absolute;
     }
