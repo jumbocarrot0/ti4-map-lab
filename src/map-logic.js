@@ -249,6 +249,26 @@ export class System {
                 case WORMHOLES.BETA:
                         name_array.push("(β)");
                         break;
+                    case WORMHOLES.GAMMA:
+                        name_array.push("(γ)");
+                        break;
+                    case WORMHOLES.EPSILON:
+                        name_array.push("(ε)");
+                        break;
+                    case WORMHOLES.ZETA:
+                        name_array.push("(ζ)");
+                        break;
+                    case WORMHOLES.ETA:
+                        name_array.push("(η)");
+                        break;
+                    case WORMHOLES.THETA:
+                        name_array.push("(θ)");
+                        break;
+                    case WORMHOLES.IOTA:
+                        name_array.push("(ι)");
+                        break;
+                    case WORMHOLES.KAPPA:
+                        name_array.push("(κ)");
                     break;
                 default: break;
             }
