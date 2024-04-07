@@ -52,6 +52,13 @@ export class MapEditor extends BaseEditor {
         };
         this.state.include_expansion_systems = true;
 		this.state.include_base_systems = true;
+        this.state.bank_systems = this.syncBankSystems(starting_layout,
+            {
+                include_eronous_systems: this.state.include_eronous_systems,
+                include_discordant_stars_systems: this.state.include_discordant_stars_systems,
+                include_expansion_systems: this.state.include_expansion_systems,
+                include_base_systems: this.state.include_base_systems
+            });
         this.state.long_op = false;
         if(this.props.state_to_import) {
             let matching_options = this.getOptions().filter(option => option.index === this.props.state_to_import.selected_item);
