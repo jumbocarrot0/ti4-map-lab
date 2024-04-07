@@ -34,8 +34,10 @@ export class MapEditor extends BaseEditor {
         this.state.selected_bank_system = null;
         this.state.system_format = SYSTEM_FORMATS.STREAMLINED_WITH_NAME;
         this.state.draggedSystem = null;
+        this.state.option_max_legendaries = 2;
         this.state.option_pair_wormholes = true;
-        this.state.option_include_all_wormholes = true;
+        this.state.option_include_all_wormholes = false;
+        this.state.option_include_two_wormhole_colors = true;
         this.state.target_blue_total = "random";
         this.state.bank_systems = this.syncBankSystems(starting_layout, true, true);
         this.state.eval_option="default_0";
@@ -249,14 +251,28 @@ export class MapEditor extends BaseEditor {
     handleIncludeWormholesChange() {
         let isChecked = document.getElementById("require-all-wormholes").checked;
         this.setState(
-            {"option_include_all_wormholes": isChecked}
+            { "option_include_all_wormholes": isChecked }
+        );
+    }
+
+    handleTwoWormholeColorsChange() {
+        let isChecked = document.getElementById("require-two-wormhole-colors").checked;
+        this.setState(
+            { "option_include_two_wormhole_colors": isChecked }
         );
     }
 
     handlePairWormholesChange() {
         let isChecked = document.getElementById("pair-wormholes").checked;
         this.setState(
-            {"option_pair_wormholes": isChecked}
+            { "option_pair_wormholes": isChecked }
+        );
+    }
+
+    handleMaxLegendariesChange() {
+        let value = document.getElementById("max-legendaries").value;
+        this.setState(
+            { "option_max_legendaries": value }
         );
     }
 
@@ -474,57 +490,103 @@ export class MapEditor extends BaseEditor {
         let avail_sys_pool = [];
         let system_box = newest_history.system_box;
         let map = newest_history.map;
-        for(let one_sys of system_box.systems) {
+        for (const one_sys of system_box.systems) {
             let can_add = true;
+            // Wont add a system if it'll result in more than the max number of legendary planets
             if (
+                one_sys.planets.some(planet => planet.legendary) &&
+                map.getLegendariesTotal() >= this.state.option_max_legendaries
+            ) {
+                can_add = false;
+            }
+            // Wont add a system if there are still wormholes to add
+            else if (
+                // If all wormholes are required
                 this.state.option_include_all_wormholes &&
-                one_sys.wormhole === null &&
+                one_sys.wormhole.length === 0 &&
                 system_box.getWormholeSystems().length >= map.getOpenSpacesTotal()
             ) {
                 can_add = false;
             } else {
+                // If wormholes must be paired, i.e. must be 0 or 2+ of each wormhole, not 1
                 if (this.state.option_pair_wormholes) {
-                    let total_needed = 0;
-                    let b_holes = system_box.getWormholeSystems(WORMHOLES.BETA).length;
-                    let a_holes = system_box.getWormholeSystems(WORMHOLES.ALPHA).length;
-                    if (b_holes === 1) total_needed++;
-                    if (a_holes === 1) total_needed++;
+                    let single_wormholes = []
+                    Object.keys(WORMHOLES).forEach(wormhole => {
+                        if (wormhole === 'DELTA') {
+                        } else if (wormhole === 'GAMMA') {
+                        } else {
+                            const wormhole_count = map.getWormholeSpaces(WORMHOLES[wormhole]).length;
+                            if (wormhole_count === 1) single_wormholes.push(WORMHOLES[wormhole])
+                        }
+                    })
+                    // Will not add system if it does not complete a single wormhole and there is one available
                     if (
-                        total_needed >= map.getOpenSpacesTotal()
+                        single_wormholes.reduce((available_tiles, wormhole) => available_tiles + system_box.getWormholeSystems(wormhole).length, 0) > 0
                         &&
                         (
-                            one_sys.wormhole === null
+                            one_sys.wormhole.length === 0
                             ||
-                            (one_sys.wormhole !== WORMHOLES.BETA && a_holes !== 1)
-                            ||
-                            (one_sys.wormhole !== WORMHOLES.ALPHA && b_holes !== 1)
+                            !one_sys.wormhole.some(wormhole => single_wormholes.includes(wormhole))
                         )
                     ) can_add = false;
                 }
+                // If there must be two wormhole colors. In vanilla the only options are alpha + beta, but homebrew might add more
+                if (can_add && this.state.option_include_two_wormhole_colors) {
+                    let present_wormholes = []
+                    Object.keys(WORMHOLES).forEach(wormhole => {
+                        if (wormhole === 'DELTA') {
+                        } else if (wormhole === 'GAMMA') {
+                        } else {
+                            const wormhole_count = map.getWormholeSpaces(WORMHOLES[wormhole]).length;
+                            // If wormholes are paired, then a wormhole colour is only present if it is already paired
+                            if (this.state.option_pair_wormholes){
+                                if (wormhole_count >= 2) present_wormholes.push(WORMHOLES[wormhole])
+                            } else {
+                                if (wormhole_count >= 1) present_wormholes.push(WORMHOLES[wormhole])
+                            }
+                        }
+                    })
+                    // Will not add a system if there are fewer than 2 wormholes on the map, 
+                    // the current tile does not have a new wormhole colour, 
+                    // and there are tiles available that do satisfy this condition
+                    if (
+                        present_wormholes.length < 2
+                        &&
+                        (system_box.getWormholeSystems().length - present_wormholes.reduce((uneeded_tiles, present_wormhole) => uneeded_tiles + system_box.getWormholeSystems(present_wormhole).length, 0)) > 0
+                        &&
+                        (
+                            one_sys.wormhole.length === 0
+                            ||
+                            one_sys.wormhole.every(wormhole => present_wormholes.includes(wormhole))
+                        )
+                    ) can_add = false;
+                }
+                }
                 if (can_add) avail_sys_pool.push(one_sys);
+
+        }
+        if (this.state.target_blue_total !== "random") {
+            let target_ratio = this.state.target_blue_total / (map.getPossibleSystemTotal() - this.state.target_blue_total);
+            let current_ratio = map.getBlueSystemTotal() / map.getRedSystemTotal();
+            if (target_ratio < current_ratio) {
+                let replacement_pool = [];
+                for (const one_sys of avail_sys_pool) {
+                    if (one_sys.isRed()) replacement_pool.push(one_sys);
+                }
+                if (replacement_pool.length > 0) avail_sys_pool = replacement_pool;
+            } else if (target_ratio > current_ratio) {
+                let replacement_pool = [];
+                for (const one_sys of avail_sys_pool) {
+                    if (one_sys.isBlue()) replacement_pool.push(one_sys);
+                }
+                if (replacement_pool.length > 0) avail_sys_pool = replacement_pool;
             }
         }
-        if(this.state.target_blue_total!=="random") {
-            let target_ratio = this.state.target_blue_total/(map.getPossibleSystemTotal()-this.state.target_blue_total);
-            let current_ratio = map.getBlueSystemTotal()/map.getRedSystemTotal();
-            if(target_ratio<current_ratio) {
-                let replacement_pool = [];
-                for(let one_sys of avail_sys_pool) {
-                    if(one_sys.isRed()) replacement_pool.push(one_sys);
-                }
-                if(replacement_pool.length>0) avail_sys_pool = replacement_pool;
-            } else if(target_ratio>current_ratio) {
-                let replacement_pool = [];
-                for(let one_sys of avail_sys_pool) {
-                    if(one_sys.isBlue()) replacement_pool.push(one_sys);
-                }
-                if(replacement_pool.length>0) avail_sys_pool = replacement_pool;
-            }
-        }
-        let chosen_system = avail_sys_pool[Math.floor(Math.random() * avail_sys_pool.length)];
+        const random_index = Math.floor(Math.random() * avail_sys_pool.length);
+        let chosen_system = avail_sys_pool[random_index];
         let avail_space_pool = [];
-        for(let [index, one_space] of map.spaces.entries()) {
-            if(one_space.type===MAP_SPACE_TYPES.OPEN) avail_space_pool.push(index);
+        for (const [index, one_space] of map.spaces.entries()) {
+            if (one_space.type === MAP_SPACE_TYPES.OPEN) avail_space_pool.push(index);
         }
         let chosen_space_index = avail_space_pool[Math.floor(Math.random() * avail_space_pool.length)];
         let new_map = map.makeCopy();
@@ -532,7 +594,7 @@ export class MapEditor extends BaseEditor {
         new_map.spaces[chosen_space_index].system = chosen_system;
         let new_box = this.syncBankSystems(new_map);
 
-        if(new_map.isLegal()) {
+        if (new_map.isLegal()) {
             return {
                 "map": new_map,
                 "system_box": new_box,
@@ -913,7 +975,16 @@ export class MapEditor extends BaseEditor {
                                     checked={this.state.option_include_all_wormholes}
                                     onChange={()=>this.handleIncludeWormholesChange()}
                                 />
-                                <label htmlFor="require-all-wormholes"> Require Wormholes</label>
+                                <label htmlFor="require-all-wormholes"> Require All Wormhole Tiles</label>
+                            </p>
+                            <p className="control">
+                                <input
+                                    id="require-two-wormhole-colors"
+                                    type="checkbox"
+                                    checked={this.state.option_include_two_wormhole_colors}
+                                    onChange={() => this.handleTwoWormholeColorsChange()}
+                                />
+                                <label htmlFor="require-all-wormholes"> Require 2 Wormhole Colors (Minus Gamma)</label>
                             </p>
                             <p className="control">
                                 <input
@@ -923,6 +994,17 @@ export class MapEditor extends BaseEditor {
                                     onChange={()=>this.handlePairWormholesChange()}
                                 />
                                 <label htmlFor="pair-wormholes"> Pair Wormholes</label>
+                            </p>
+                            <p className="control">
+                                <input
+                                    id="max-legendaries"
+                                    type="number"
+                                    min="0"
+                                    style={{ maxWidth: "50px" }}
+                                    value={this.state.option_max_legendaries}
+                                    onChange={() => this.handleMaxLegendariesChange()}
+                                />
+                                <label htmlFor="max-legendaries"> Max # Legendaries</label>
                             </p>
                             <p className="control">
                                 <span className="select is-small">
