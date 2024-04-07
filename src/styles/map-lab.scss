@@ -333,6 +333,9 @@ h1 {padding:1rem;}
       box-shadow: 0px 0px $lgPlanetSize/10 $lgPlanetSize/10 red;
     }
   }
+  &.legendary {
+    border: 2px solid white
+  }
 }
 
 .map {
