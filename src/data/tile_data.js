@@ -737,22 +737,6 @@ export let planet_data = [
         "influence": 2,
     },
     {
-        "name": "Qaak",
-        "trait": PLANET_TRAITS.CULTURAL,
-        "tech_specialty": TECH_SPECIALTIES.NONE,
-		"legendary": false,
-        "resources": 1,
-        "influence": 1,
-    },
-    {
-        "name": "Larred",
-        "trait": PLANET_TRAITS.INDUSTRIAL,
-        "tech_specialty": TECH_SPECIALTIES.NONE,
-		"legendary": false,
-        "resources": 1,
-        "influence": 1,
-    },
-    {
         "name": "Domna",
         "trait": PLANET_TRAITS.HAZARDOUS,
         "tech_specialty": TECH_SPECIALTIES.NONE,
@@ -891,7 +875,7 @@ export let planet_data = [
         "influence": 1,
     },
     {
-        "name": "Su'Prima",
+        "name": "Kkita Ul'in",
         "trait": PLANET_TRAITS.CULTURAL,
         "tech_specialty": TECH_SPECIALTIES.NONE,
 		"legendary": false,
@@ -900,6 +884,14 @@ export let planet_data = [
     },
     {
         "name": "Su'Prima",
+        "trait": PLANET_TRAITS.INDUSTRIAL,
+        "tech_specialty": TECH_SPECIALTIES.NONE,
+		"legendary": false,
+        "resources": 2,
+        "influence": 1,
+    },
+    {
+        "name": "Solin Tu",
         "trait": PLANET_TRAITS.INDUSTRIAL,
         "tech_specialty": TECH_SPECIALTIES.NONE,
 		"legendary": false,
@@ -1059,6 +1051,14 @@ export let planet_data = [
         "influence": 2,
     },
     {
+        "name": "Tir",
+        "trait": PLANET_TRAITS.HAZARDOUS,
+        "tech_specialty": TECH_SPECIALTIES.NONE,
+		"legendary": false,
+        "resources": 1,
+        "influence": 2,
+    },
+    {
         "name": "Meko II",
         "trait": PLANET_TRAITS.CULTURAL,
         "tech_specialty": TECH_SPECIALTIES.PROPULSION,
@@ -1083,7 +1083,7 @@ export let planet_data = [
         "influence": 2,
     },
     {
-        "name": "Dwuiit",
+        "name": "Dwuuit",
         "trait": PLANET_TRAITS.CULTURAL,
         "tech_specialty": TECH_SPECIALTIES.NONE,
 		"legendary": false,
@@ -1128,6 +1128,14 @@ export let planet_data = [
         "tech_specialty": TECH_SPECIALTIES.NONE,
 		"legendary": false,
         "resources": 3,
+        "influence": 1,
+    },
+    {
+        "name": "Venhalo",
+        "trait": PLANET_TRAITS.INDUSTRIAL,
+        "tech_specialty": TECH_SPECIALTIES.NONE,
+		"legendary": false,
+        "resources": 1,
         "influence": 1,
     },
     {
@@ -1341,6 +1349,14 @@ export let planet_data = [
 		"legendary": false,
         "resources": 2,
         "influence": 1,
+    },
+    {
+        "name": "Prymis",
+        "trait": PLANET_TRAITS.INDUSTRIAL,
+        "tech_specialty": TECH_SPECIALTIES.NONE,
+		"legendary": false,
+        "resources": 1,
+        "influence": 2,
     },
     {
         "name": "Sigilus",
@@ -2259,7 +2275,7 @@ export let system_data = [
     {
         "id": "er21",
         "planets": [],
-        "anomaly": [ANOMALIES.NEBULA, ANOMALIES.ASTEROID_FIELD, ANOMALIES.GRAVITY_RIFT, ANOMALIES.SUPERNOVA],
+        "anomaly": [ANOMALIES.ASTEROID_FIELD, ANOMALIES.NEBULA, ANOMALIES.SUPERNOVA, ANOMALIES.GRAVITY_RIFT],
         "wormhole": []
     },
     {
@@ -2456,13 +2472,13 @@ export let system_data = [
     },
     {
         "id": "er54",
-        "planets": ["Tethn'Sekus", "Tethn'Tris"],
+        "planets": ["Tethn'Sekus", "Tethn'Tirs"],
         "anomaly": [],
         "wormhole": []
     },
     {
         "id": "er55",
-        "planets": ["Dwuuit", "Uhoot"],
+        "planets": ["Dwuuit", "Uhott"],
         "anomaly": [],
         "wormhole": []
     },
@@ -2661,14 +2677,14 @@ export let system_data = [
     {
         "id": "er90",
         "planets": ["Char"],
-        "anomaly": [],
+        "anomaly": [ANOMALIES.SUPERNOVA],
         "wormhole": []
     },
     {
         "id": "er91",
         "planets": ["Dognui"],
         "anomaly": [],
-        "wormhole": []
+        "wormhole": [ANOMALIES.GRAVITY_RIFT]
     },
     {
         "id": "er92",
@@ -2739,7 +2755,7 @@ export let system_data = [
     {
         "id": "er103",
         "planets": ["Perpetual"],
-        "anomaly": [],
+        "anomaly": [ANOMALIES.SUPERNOVA],
         "wormhole": []
     },
     {
