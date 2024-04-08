@@ -508,28 +508,28 @@ export class SystemComponent extends React.Component {
                         extras.push(<div title="Alpha Wormhole" className="wormhole alpha" key="alpha_wh">α</div>);
                         break;
                     case WORMHOLES.BETA:
-                        extras.push(<div title="Beta Wormhole" className="wormhole beta" key="alpha_wh">β</div>);
+                        extras.push(<div title="Beta Wormhole" className="wormhole beta" key="beta_wh">β</div>);
                         break;
                     case WORMHOLES.GAMMA:
-                        extras.push(<div title="Gamma Wormhole" className="wormhole gamma" key="alpha_wh">γ</div>);
+                        extras.push(<div title="Gamma Wormhole" className="wormhole gamma" key="gamma_wh">γ</div>);
                         break;
                     case WORMHOLES.EPSILON:
-                        extras.push(<div title="Epsilon Wormhole" className="wormhole epsilon" key="alpha_wh">ε</div>);
+                        extras.push(<div title="Epsilon Wormhole" className="wormhole epsilon" key="epsilon_wh">ε</div>);
                         break;
                     case WORMHOLES.ZETA:
-                        extras.push(<div title="Zeta Wormhole" className="wormhole zeta" key="alpha_wh">ζ</div>);
+                        extras.push(<div title="Zeta Wormhole" className="wormhole zeta" key="zeta_wh">ζ</div>);
                         break;
                     case WORMHOLES.ETA:
-                        extras.push(<div title="Eta Wormhole" className="wormhole eta" key="alpha_wh">η</div>);
+                        extras.push(<div title="Eta Wormhole" className="wormhole eta" key="eta_wh">η</div>);
                         break;
                     case WORMHOLES.THETA:
-                        extras.push(<div title="Theta Wormhole" className="wormhole theta" key="alpha_wh">θ</div>);
+                        extras.push(<div title="Theta Wormhole" className="wormhole theta" key="theta_wh">θ</div>);
                         break;
                     case WORMHOLES.IOTA:
-                        extras.push(<div title="Iota Wormhole" className="wormhole iota" key="alpha_wh">ι</div>);
+                        extras.push(<div title="Iota Wormhole" className="wormhole iota" key="iota_wh">ι</div>);
                         break;
                     case WORMHOLES.KAPPA:
-                        extras.push(<div title="Kappa Wormhole" className="wormhole kappa" key="alpha_wh">κ</div>);
+                        extras.push(<div title="Kappa Wormhole" className="wormhole kappa" key="kappa_wh">κ</div>);
                         break;
                     default: break;
                 }
