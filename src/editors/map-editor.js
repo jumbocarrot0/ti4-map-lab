@@ -35,6 +35,7 @@ export class MapEditor extends BaseEditor {
         this.state.system_format = SYSTEM_FORMATS.STREAMLINED_WITH_NAME;
         this.state.draggedSystem = null;
         this.state.option_max_legendaries = 2;
+        this.state.option_max_wormholes = 2;
         this.state.option_pair_wormholes = true;
         this.state.option_include_all_wormholes = false;
         this.state.option_include_two_wormhole_colors = true;
@@ -277,6 +278,13 @@ export class MapEditor extends BaseEditor {
         );
     }
 
+    handleMaxWormholesChange() {
+        let value = document.getElementById("max-wormholes").value;
+        this.setState(
+            { "option_max_wormholes": value }
+        );
+    }
+
     handleMaxLegendariesChange() {
         let value = document.getElementById("max-legendaries").value;
         this.setState(
@@ -345,9 +353,10 @@ export class MapEditor extends BaseEditor {
         let coord_list = map_string_order.slice();
         if (id_list.length <= 37) coord_list.splice(36, 24);
         for (const [index, one_id_string] of id_list.entries()) {
-            let one_id = parseInt(one_id_string);
-            if (one_id !== 0) {
+            let one_id = one_id_string;
+            if (one_id !== "0") {
                 let one_system = new_bank.getSystemByID(one_id);
+                console.log(one_id, one_system)
                 if (!one_system) {
                     let one_system_space = new_map.getSpaceBySystemID(one_id);
                     if (!one_system_space) {
@@ -500,10 +509,19 @@ export class MapEditor extends BaseEditor {
         let map = newest_history.map;
         for (const one_sys of system_box.systems) {
             let can_add = true;
+
             // Wont add a system if it'll result in more than the max number of legendary planets
             if (
                 one_sys.planets.some(planet => planet.legendary) &&
                 map.getLegendariesTotal() >= this.state.option_max_legendaries
+            ) {
+                can_add = false;
+            }
+            // Wont add a system if it'll result in more than the max number of wormhole types
+            else if (
+                Object.values(WORMHOLES).filter(wormhole => map.getWormholeSpaces(wormhole).length > 0).filter(wormhole => wormhole !== WORMHOLES.GAMMA).length >= this.state.option_max_wormholes
+                &&
+                one_sys.wormhole.filter(wormhole => wormhole !== WORMHOLES.GAMMA).some(wormhole => map.getWormholeSpaces(wormhole).length === 0)
             ) {
                 can_add = false;
             }
@@ -538,37 +556,37 @@ export class MapEditor extends BaseEditor {
                         )
                     ) can_add = false;
                 }
-                // If there must be two wormhole colors. In vanilla the only options are alpha + beta, but homebrew might add more
-                if (can_add && this.state.option_include_two_wormhole_colors) {
-                    let present_wormholes = []
-                    Object.keys(WORMHOLES).forEach(wormhole => {
-                        if (wormhole === 'DELTA') {
-                        } else if (wormhole === 'GAMMA') {
-                        } else {
-                            const wormhole_count = map.getWormholeSpaces(WORMHOLES[wormhole]).length;
-                            // If wormholes are paired, then a wormhole colour is only present if it is already paired
-                            if (this.state.option_pair_wormholes){
-                                if (wormhole_count >= 2) present_wormholes.push(WORMHOLES[wormhole])
-                            } else {
-                                if (wormhole_count >= 1) present_wormholes.push(WORMHOLES[wormhole])
-                            }
-                        }
-                    })
-                    // Will not add a system if there are fewer than 2 wormholes on the map, 
-                    // the current tile does not have a new wormhole colour, 
-                    // and there are tiles available that do satisfy this condition
-                    if (
-                        present_wormholes.length < 2
-                        &&
-                        (system_box.getWormholeSystems().length - present_wormholes.reduce((uneeded_tiles, present_wormhole) => uneeded_tiles + system_box.getWormholeSystems(present_wormhole).length, 0)) > 0
-                        &&
-                        (
-                            one_sys.wormhole.length === 0
-                            ||
-                            one_sys.wormhole.every(wormhole => present_wormholes.includes(wormhole))
-                        )
-                    ) can_add = false;
-                }
+                // // If there must be two wormhole colors. In vanilla the only options are alpha + beta, but homebrew might add more
+                // if (can_add && this.state.option_include_two_wormhole_colors) {
+                //     let present_wormholes = []
+                //     Object.keys(WORMHOLES).forEach(wormhole => {
+                //         if (wormhole === 'DELTA') {
+                //         } else if (wormhole === 'GAMMA') {
+                //         } else {
+                //             const wormhole_count = map.getWormholeSpaces(WORMHOLES[wormhole]).length;
+                //             // If wormholes are paired, then a wormhole colour is only present if it is already paired
+                //             if (this.state.option_pair_wormholes){
+                //                 if (wormhole_count >= 2) present_wormholes.push(WORMHOLES[wormhole])
+                //             } else {
+                //                 if (wormhole_count >= 1) present_wormholes.push(WORMHOLES[wormhole])
+                //             }
+                //         }
+                //     })
+                //     // Will not add a system if there are fewer than 2 wormholes on the map, 
+                //     // the current tile does not have a new wormhole colour, 
+                //     // and there are tiles available that do satisfy this condition
+                //     if (
+                //         present_wormholes.length < 2
+                //         &&
+                //         (system_box.getWormholeSystems().length - present_wormholes.reduce((uneeded_tiles, present_wormhole) => uneeded_tiles + system_box.getWormholeSystems(present_wormhole).length, 0)) > 0
+                //         &&
+                //         (
+                //             one_sys.wormhole.length === 0
+                //             ||
+                //             one_sys.wormhole.every(wormhole => present_wormholes.includes(wormhole))
+                //         )
+                //     ) can_add = false;
+                // }
             }
             if (can_add) avail_sys_pool.push(one_sys);
 
@@ -713,7 +731,7 @@ export class MapEditor extends BaseEditor {
             if (found_it) {
                 this.setMap(new_map, new_hv, new_diff);
                 this.setState({
-                    "message": `Balance gap has been improved.\nSwapped ${swapped_tile_a.id} and ${swapped_tile_b.id}`,
+                    "message": `Balance gap has been improved.\nSwapped\n(${swapped_tile_a.getStringName()})\nand\n(${swapped_tile_b.getStringName()})`,
                     "long_op": false,
                 });
             } else {
@@ -1003,7 +1021,7 @@ export class MapEditor extends BaseEditor {
                                 />
                                 <label htmlFor="require-all-wormholes"> Require All Wormhole Tiles</label>
                             </p>
-                            <p className="control">
+                            {/* <p className="control">
                                 <input
                                     id="require-two-wormhole-colors"
                                     type="checkbox"
@@ -1011,7 +1029,7 @@ export class MapEditor extends BaseEditor {
                                     onChange={() => this.handleTwoWormholeColorsChange()}
                                 />
                                 <label htmlFor="require-all-wormholes"> Require 2 Wormhole Colors (Minus Gamma)</label>
-                            </p>
+                            </p> */}
                             <p className="control">
                                 <input
                                     id="pair-wormholes"
@@ -1020,6 +1038,17 @@ export class MapEditor extends BaseEditor {
                                     onChange={() => this.handlePairWormholesChange()}
                                 />
                                 <label htmlFor="pair-wormholes"> Pair Wormholes</label>
+                            </p>
+                            <p className="control">
+                                <input
+                                    id="max-wormholes"
+                                    type="number"
+                                    min="0"
+                                    style={{ maxWidth: "50px" }}
+                                    value={this.state.option_max_wormholes}
+                                    onChange={() => this.handleMaxWormholesChange()}
+                                />
+                                <label htmlFor="max-wormholes"> Max # Wormhole Colours</label>
                             </p>
                             <p className="control">
                                 <input
