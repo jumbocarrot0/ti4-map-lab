@@ -107,6 +107,10 @@ export class SystemBankComponent extends React.Component {
                         />
                         <label htmlFor="include-expansion-systems"> Expansion Systems</label>
                     </p>
+                    <label className="label">
+                        Fanmade Tiles
+                    </label>
+                    <em>These system tiles were made by community members and should not be mistaken for official content.</em>
                     <p className="control">
                         <input
                             id="include-ds-systems"
@@ -114,7 +118,8 @@ export class SystemBankComponent extends React.Component {
                             checked={this.props.include_discordant_stars_systems}
                             onChange={(e)=>this.handleDiscordantStarsCheckboxChange(e)}
                         />
-                        <label htmlFor="include-ds-systems"> Uncharted Space Systems (DS)</label>
+                        <label htmlFor="include-ds-systems"> Uncharted Space Systems (DS)</label><br/>
+                        <em>You can find more information about these tiles on the <a href="https://twilight-imperium.fandom.com/wiki/Discordant_Stars_Tiles_(UNOFFICIAL)">TI4 Fandom Wiki</a> or the <a href="https://docs.google.com/document/d/10sYWiwVNvdOwDMpvHlbsx4athKwgeTc8usWFMV3Aaas/edit?usp=sharing">Uncharted Space Reference Document</a>.</em>
                     </p>
                     <p className="control">
                         <input
