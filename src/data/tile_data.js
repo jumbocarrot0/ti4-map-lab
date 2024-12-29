@@ -2098,7 +2098,7 @@ export let system_data = [
     },
     {
         "id": "4268",
-        "planets": ["Sierpen", "Mandle", "Regmen"],
+        "planets": ["Sierpen", "Mandle", "Regnem"],
         "anomaly": [],
         "wormhole": []
     },
